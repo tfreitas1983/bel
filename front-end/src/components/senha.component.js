@@ -516,9 +516,11 @@ export default class Senha extends Component {
                                     <option value={sala.descricao} key={index} onClick={() => this.ativaSala(sala, index)}>{sala.descricao}</option>
                                 ))}                             
                             </select>
-                            <button type="button" onClick={this.gerarSenha}>
+                            <div className="actions" style={{width: 10+'em'}}>
+                            <button type="button"  onClick={this.gerarSenha}>
                                 Gerar Senha
                             </button>
+                            </div>
                                     
                         </div>
                         {autocompleteSenha}
