@@ -1,0 +1,525 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+}
+
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+
+[class*="col-"] {
+    float: left;
+    padding: 15px;  
+    margin-left: 10px;      
+}
+
+.container {
+  position: relative;
+}
+
+.autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;  
+}
+
+.autocomplete input {
+  width: 525px;
+  border-color: #276363;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+ 
+}
+.autocomplete-items {
+position: relative;
+display: block;
+padding: 0  0  0 10px;
+margin: 2px 0;
+background-color: #f6fbfc;
+border: 1px solid #276363;
+border-radius: 15px;
+color: #0f4747;
+}
+
+.autocomplete-items a{
+border: 0;
+padding: 0;
+margin: 0;
+text-decoration: none;
+right: 0.5%;
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;  
+  border-bottom: 1px solid #d4d4d4;
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #276363;
+}
+.autocomplete-items-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: #50a3aa;
+  color: #f9f9f9;
+  padding: 0;
+  margin: 2px 0;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 18px; 
+}
+
+.autocomplete-items-active a{
+  border: 0;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  right: 0.5%;
+  background-color: #50a3aa;
+  }
+
+.autocomplete-active div:hover{
+  /*when navigating through the items using the arrow keys:*/
+  background: #005566;
+  color: #f9f9f9;
+  border-radius: 5px;
+}
+
+#acoes {
+  color: #2b313b;
+  background-color: #4ca1a1;
+  border-radius: 15px;
+  padding: 10px;
+  text-decoration: none;
+}
+
+.dropdown li{
+  float: left;  
+}
+
+li span, .dropbtn {
+  display: flex;
+  color: #aaaaaa;
+  text-align: center;
+  padding: 8px 6px;
+  text-decoration: none;  
+}
+
+.dropbtn a {
+  color: #aaaaaa;
+}
+.dropdown-content a {
+  color: #aaaaaa;
+  text-align: center; 
+  text-decoration: none; 
+}
+
+a:hover, .dropdown {
+  color: #aaaaaa;
+  text-align: center; 
+  text-decoration: none; 
+ 
+}
+
+li span:hover, .dropdown:hover .dropbtn {
+  background-color: #282c34;
+}
+
+li.dropdown {
+  display: inline-block;  
+  text-decoration: none;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #2b313b;
+  color: #aaaaaa;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  text-decoration: none;
+}
+
+Link {
+  display: block;
+  text-decoration: none;
+}
+
+Link:hover {
+    text-decoration: none;
+}  
+
+.dropdown-content span Link {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content Link:hover {background-color: #f1f1f1;}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
+.imagem img {
+  border-radius: 50%;
+  height: 150px;
+  width: 150px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  box-shadow: 3px 7px 5px rgba(50, 50, 50, 0.55)
+}
+
+.pagination {
+  position: relative;
+  text-decoration: none;
+  margin: auto;
+}
+
+#file {
+  border-radius: 5px;
+  background-image: linear-gradient(to left,#257575, #50a3aa);
+  color: #fff;
+
+}
+
+#editar{
+  position: relative;
+  margin-left: 20vw;
+  justify-self: right;
+
+}
+
+#apagar{
+  margin-left: 40px;
+  margin-bottom: 30px;
+}
+
+.envio {
+  margin-bottom: 15px;
+}
+
+.list {
+  text-align: left;
+  max-width: 100%;
+  margin-top: 50px;
+  font-weight: 700;
+  
+}
+
+.list-group li {
+  height: 62px;
+  width: 350px;
+}
+
+.labels {
+  display: flex;
+  justify-content: space-around;
+}
+
+.grupo-sexo {
+  border: 1px solid #d0d0d0;
+  border-radius: 5px;
+  margin: 0 0 4px  0;
+  padding: 5px 0 0 12px;
+  width: 100%;
+}
+
+.sexo {
+  margin-right: 18px;
+  font-size: 18px;
+}
+
+.adicionar {
+ display: flex;
+ justify-content: center;
+ width: 84%;
+}
+
+.adicionar button{
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: 0;
+  background-image: linear-gradient(to left,#257575, #50a3aa);
+  color: #FFF;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+}
+
+.adicionar a {
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: 0;
+  background-image: linear-gradient(to left,#257575, #50a3aa);
+  color: #FFF;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 30%;  
+  text-align: center;
+}
+
+
+.adicionar button:hover {
+  background: #276363;
+  color: #FFF;
+  cursor: pointer;
+}
+
+.actions{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.actions2{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 35px;
+}
+
+.duplo {
+  padding: 15px;    
+}
+
+#plus {
+  padding: 0px 10px 0px 10px;
+  border-radius: 50%;
+  margin-left: 10px;
+  border: 0;
+  background: #257575;
+  color: #FFF;
+  height: 30px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.actions button{
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: 0;
+  background-image: linear-gradient(to left,#257575, #50a3aa);
+  color: #FFF;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 20%;
+}
+
+.actions button[disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+
+.actions button:hover {
+  background: #276363;
+  color: #FFF;
+  cursor: pointer;
+
+}
+.table {
+  width: 100vw;
+  margin-top: 60px;
+}
+
+table, th, td {
+  border: 1px solid black;
+  margin-top: 10px;
+  width: max-content;
+}
+
+.preview{
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-top: 10px;
+  
+}
+
+.preview img {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;  
+  margin-right: 10px;  
+}
+
+.submit-form {  
+  max-width: 1200px;
+  margin: 3% 5% 0% 5%;
+  justify-content: space-evenly;  
+}
+
+.edit-form {
+  max-width: 1200px;
+  margin-top: 60px;
+}
+
+.form-check-label {
+  margin-right: 15px;  
+  font-size: 18px;
+}
+@media print { 
+  .noprint  { display: none;}
+  body.modal-open {
+    visibility: hidden;
+    
+  }  
+
+  body.modal-open .modal .modal_bg .modal-body {
+      visibility: visible; /* make visible modal body and header */
+      position: absolute;
+      top: 0;
+      margin:0;
+  }
+}
+
+.birth-report{
+  margin-top: 60px;
+  background: #f9f9f9;  
+  padding: 10px;
+  width: 100%;
+}
+
+
+.birth-report-list {
+  margin-top: 0px;
+  width: 100%;
+  padding: 15px;
+  background: #f9f9f9;
+}
+
+.birth-report-list article {
+  background: #fcfcfc;
+  border: 1px solid #DDD;
+  border-radius: 5px;
+  padding:0px;
+  width: 100%;
+  margin: 0 10px 5px 0px;
+  display: table;  
+}
+
+.birth-report-list article img {
+  margin-left: 10px;
+}
+
+.birth-report-list article h4 {
+  margin-top: 60px;
+}
+
+.modal_bg {
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	z-index:99;
+  background-color:rgba(0, 0, 0, 0.6);
+  overflow: visible!important;
+	
+}
+.modal {
+  position: absolute;
+  display: grid;
+	width:250px;
+	height: 300px;
+	background-color:#FFFFFF;
+	z-index:100;
+	top:10%;
+  margin: 0;
+  overflow: visible!important;
+}
+
+.modal h2{
+  justify-content: center;
+  display: flex;
+}
+
+.modal button{
+  padding: 0px;
+  margin: 0px 60px 10px;
+  border: 0;
+  background-image: linear-gradient(to left,#257575, #50a3aa);
+  color: #FFF;  
+  cursor: pointer;
+  height: 43px;
+
+}
+
+.modal button:hover {
+  background: #276363;
+  color: #FFF;
+  cursor: pointer;
+
+}
+
+#closeButton {
+  position: absolute;
+  top: 0;  
+  right: 0;
+  outline: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0px;
+  font-size: 12px;
+  height: 25px;
+  width: 25px;  
+}
