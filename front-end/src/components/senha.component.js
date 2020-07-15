@@ -28,6 +28,7 @@ export default class Senha extends Component {
         this.selecionaPagina = this.selecionaPagina.bind(this)
 
         this.gerarSenha = this.gerarSenha.bind(this)
+        this.chamarSenha = this.chamarSenha.bind(this)
 
         this.state = {
             senhas:[],
@@ -321,7 +322,39 @@ export default class Senha extends Component {
     showModal = () => {
         this.setState({ showModal: true })
       }
+
+    showModalSenha = () => {
+        this.setState({ showModalSenha: true })
+    }
+
+    showModalChamada = () => {
+        this.setState({ showModalChamada: true })
+    }   
     
+    hideModalChamada = () => {
+        this.setState({ 
+            showModalChamada: false
+        })
+    }
+
+    hideModalSenha = () => {
+    this.setState({ 
+        showModalSenha: false,
+        currentSenha: null,
+        currentSala: null,
+        selectedSala: "",
+        numero: "",
+        tipo: "",
+        buscaNome: "",
+        buscaSenha: "",
+        current: null,
+        currentIndexSenha: -1        
+    }) 
+    this.limpaCurrentSenha()
+    this.pegaPacientes()      
+    this.pegaSenhas()
+    }
+
     hideModal = () => {
         this.setState({ 
             showModal: false,
@@ -341,6 +374,16 @@ export default class Senha extends Component {
         this.pegaSenhas()
     }
 
+    handleKeyPress = (event) => {
+        if(event.key === 27){
+          this.hideModal()
+          this.hideModalSenha()
+        }
+    }
+
+    chamarSenha() {
+
+    }
 
 
     render() {
@@ -364,19 +407,32 @@ export default class Senha extends Component {
                 
         let mostrarSenha = null
         if (currentSenha !== null) {
-            mostrarSenha =  <div className="autocomplete-items-active">
-                {current.nome}
-                {<Link to={`/pacientes/${current.id}`} id="editar" className="autocomplete-items">Editar</Link>}
+            mostrarSenha =  <div className="autocomplete-items-active" >
+                SENHA  {currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
+                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
+                    Reimprimir
+                </div>
+                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.chamarSenha}>
+                    Chamar
+                </div>
+              
             </div>
         } 
+        
         if (currentSenha === null || buscaSenha === '') {            
             mostrarSenha = 
             <div className="list-group">
            { senhas && senhas.map((senha, index) => (
                 <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")} 
                 onClick={() => this.ativaSenha(senha, index)} 
-                key={index} > 
-                    SENHA {senha.numero} - {senha.paciente} - {senha.local}                  
+                key={index} style={{display: 'flex', justifyContent: 'space-between'}}> 
+                    SENHA {senha.numero} - {senha.paciente} - {senha.local}  - {senha.status}   
+                    <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
+                        Reimprimir
+                    </div> 
+                    <div style={{backgroundColor: '#555522', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.chamarSenha}>
+                        Chamar
+                    </div>                  
                 </div>
             ))}
             </div>
@@ -431,7 +487,7 @@ export default class Senha extends Component {
         if(this.state.showModal === true) {
             modal = 
                 <div className="modal_bg">
-                    <div className="modal" >
+                    <div className="modal" onKeyPress={this.handleKeyPress} >
                         <div className="noprint">
                             <button type="button" className="closeButton" id="closeButton" onClick={this.hideModal}>X</button>
                         </div>
@@ -457,6 +513,69 @@ export default class Senha extends Component {
                 </div>
         }
 
+        let modalReimprimir = null
+        if(this.state.showModalSenha === true) {
+            modalReimprimir = 
+                <div className="modal_bg" onKeyUp={this.handleKeyPress}>
+                    <div className="modal" onKeyUp={this.handleKeyPress}>
+                        <div className="noprint">
+                            <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalSenha}>X</button>
+                        </div>
+                    <h2 style={{marginLeft: 15+'px'}}> Clínica Imagem</h2>
+                        
+                        <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
+                            {currentSenha.paciente}
+                        </label>
+                       
+                        <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
+                            {currentSenha.local}
+                        </label>
+                        
+                        <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
+                            Senha: {currentSenha.numero}
+                        </label>  
+                        <div className="noprint">                                  
+                            <button onClick={() => window.print()} className="btn btn-success">
+                                Imprimir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        }
+
+        let modalChamada = null
+        if(this.state.showModalChamada === true) {
+            modalChamada = 
+                <div className="modal_bg" onKeyUp={this.handleKeyPress}>
+                    <div className="modal" onKeyUp={this.handleKeyPress}>
+                        <div className="noprint">
+                            <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalChamada}>X</button>
+                        </div>
+                    <h2 style={{marginLeft: 15+'px'}}> Clínica Imagem</h2>
+                        
+                        <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
+                            {currentSenha.paciente}
+                        </label>
+                       
+                        <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
+                            {currentSenha.local}
+                        </label>
+                        
+                        <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
+                            Senha: {currentSenha.numero}
+                        </label>  
+                        <div className="noprint">                                  
+                            <button onClick={() => window.print()} className="btn btn-success">
+                                Imprimir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        }
+
+                
+        
+
         let autocompleteSenha = null
         if (senhas) {
             autocompleteSenha = 
@@ -471,8 +590,8 @@ export default class Senha extends Component {
                         onKeyUp={this.buscaSenha} 
                         id="paciente" 
                         name="paciente" 
-                        value={this.state.buscaNome} 
-                        onChange={this.estadoBuscaNome}
+                        value={this.state.buscaSenha} 
+                        onChange={this.estadoBuscaSenha}
                         autoComplete="off" /> 
                     </div>                                       
                 </div>                                   
@@ -482,7 +601,7 @@ export default class Senha extends Component {
 
 
         return (
-            <div className="edit-form" style={{marginTop: 60+'px'}}>
+            <div className="edit-form" style={{marginTop: 60+'px', width:1200+'px'}}>
                 <div className="noprint">
                     <h1>Senha</h1>
                     <div className="col-md-6">
@@ -504,7 +623,7 @@ export default class Senha extends Component {
                     </div>
                     <div className="col-md-5">
                         <label>Sala</label>
-                        <div className="actions2">                                
+                        <div className="actions">                                
                             <select 
                                 className="form-control" 
                                 id="sala" 
@@ -516,17 +635,18 @@ export default class Senha extends Component {
                                     <option value={sala.descricao} key={index} onClick={() => this.ativaSala(sala, index)}>{sala.descricao}</option>
                                 ))}                             
                             </select>
-                            <div className="actions" style={{width: 10+'em'}}>
-                            <button type="button"  onClick={this.gerarSenha}>
+                            <div  >
+                            <button type="button" style={{width:10+'em', height: 3+'em',marginLeft: 10+'px', padding: 15+'px'}} onClick={this.gerarSenha}>
                                 Gerar Senha
                             </button>
                             </div>
                                     
                         </div>
+                        
                         {autocompleteSenha}
                     </div>
                 </div>
-                {modal}
+                {modal} {modalReimprimir}
             </div>
         )
     }
