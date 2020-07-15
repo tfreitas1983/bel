@@ -13,6 +13,8 @@ export default class Senha extends Component {
         this.pegaSalas = this.pegaSalas.bind(this)
         this.ativaSala = this.ativaSala.bind(this)        
         this.estadoSelectSala = this.estadoSelectSala.bind(this)
+        this.buscaSenha = this.buscaSenha.bind(this)
+        this.estadoBuscaSenha = this.estadoBuscaSenha.bind(this)
         
         this.pegaPacientes = this.pegaPacientes.bind(this)
         this.estadoBuscaNome = this.estadoBuscaNome.bind(this)
@@ -29,6 +31,9 @@ export default class Senha extends Component {
 
         this.state = {
             senhas:[],
+            buscaSenha: "",
+            currentSenha: null,
+            currentIndexSenha: -1,
             numero: "",
             tipo: "",
             local: "",
@@ -105,8 +110,26 @@ export default class Senha extends Component {
         })
     }
 
+    estadoBuscaSenha(e) {
+        const buscaSenha = e.target.value
+        this.buscaNome()
+        this.limpaCurrentSenha()
+        this.setState({
+            buscaSenha: buscaSenha
+        })
+    }
+
     limpaCurrent() {
-        this.setState({            
+        this.setState({
+            current: null,
+            currentIndex: -1,
+            selectedPage: null,
+            buscaNome: ""            
+        })
+    }
+
+    limpaCurrentSenha() {
+        this.setState({           
             
             local: "",
             data_senha: "",
@@ -160,10 +183,31 @@ export default class Senha extends Component {
             })
     }
 
+    buscaSenha(page = 1) {
+        SenhaDataService.buscarSenha(this.state.buscaSenha, page)
+            .then(response => {
+                const { docs, ...info } = response.data 
+                this.setState({
+                    senhas: response.data.docs,
+                    info: info                                 
+                })    
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    }
+
     ativaSala(sala, index) {
         this.setState({
             currentSala: sala,
             currentIndexSala: index
+        })
+    }
+
+    ativaSenha(senha, index) {
+        this.setState({
+            currentSenha: senha,
+            currentIndexSenha: index
         })
     }
 
@@ -211,42 +255,7 @@ export default class Senha extends Component {
             return
         }
 
-/*
-        if (this.state.current !== "" && this.state.currentSala.sala === "Recepção") {
-            
-            filtro = (this.state.senhas).filter((item) => {
-                return item.local === this.state.currentSala.sala
-            })
 
-            console.log(filtro)
-
-
-            if (filtro.length < 1) {
-                maior = {numero: 1}
-                
-                this.setState({
-                    numero: maior.numero
-                })
-            } 
-  
-            if (filtro.length > 0) {
-                maior = filtro.reduce((a,b) => {
-                    if (b.numero > a.numero) a = b
-                    return a
-                })
-
-                this.setState({
-                    numero: maior.numero+soma,
-                    tipo: "balcao"
-                })
-            }
-
-            
-        }
-
-        */
-
-        
 
         if (this.state.current && this.state.currentSala) {
             
@@ -263,19 +272,22 @@ export default class Senha extends Component {
                 })           
                 this.setState({
                     numero: (maior.numero)+soma,
-                    tipo: "exame"
+                    tipo: "exame",
+                    paciente: this.state.current.nome
                 })                
             }   
             
             if (filtro.length === 0) {
                 this.setState({
                     numero: soma,
-                    tipo: "exame"
+                    tipo: "exame",
+                    paciente: this.state.current.nome
                 })
             }
         }
         var data = {
             numero: this.state.numero,
+            paciente: this.state.current.nome,
             tipo: this.state.tipo,
             local: this.state.currentSala.sala,          
             status: "Gerada",
@@ -288,6 +300,7 @@ export default class Senha extends Component {
             this.setState({                 
                 id: response.data.id,
                 numero: response.data.numero,
+                paciente: response.data.paciente,
                 tipo: response.data.tipo,
                 local: response.data.local,
                 data_senha: response.data.data_senha,                    
@@ -323,7 +336,7 @@ export default class Senha extends Component {
             
             
         }) 
-        this.limpaCurrent()
+        this.limpaCurrentSenha()
         this.pegaPacientes()      
         this.pegaSenhas()
     }
@@ -331,7 +344,9 @@ export default class Senha extends Component {
 
 
     render() {
-        const { senhas, numero, local, buscaDescricao, salas, resposta, currentSala, currentIndexSala, buscaNome, pacientes, info, page, current, currentIndex } = this.state
+        const { senhas, numero, local, buscaSenha, currentSenha, currentIndexSenha,
+            salas,  currentSala, currentIndexSala, 
+            buscaNome, pacientes, info, page, current, currentIndex } = this.state
 
         //Reinderiza os números das páginas de acordo com o total delas
         //Deixando selecionado a página corrente no array paginas
@@ -347,6 +362,26 @@ export default class Senha extends Component {
             )            
         } 
                 
+        let mostrarSenha = null
+        if (currentSenha !== null) {
+            mostrarSenha =  <div className="autocomplete-items-active">
+                {current.nome}
+                {<Link to={`/pacientes/${current.id}`} id="editar" className="autocomplete-items">Editar</Link>}
+            </div>
+        } 
+        if (currentSenha === null || buscaSenha === '') {            
+            mostrarSenha = 
+            <div className="list-group">
+           { senhas && senhas.map((senha, index) => (
+                <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")} 
+                onClick={() => this.ativaSenha(senha, index)} 
+                key={index} > 
+                    SENHA {senha.numero} - {senha.paciente} - {senha.local}                  
+                </div>
+            ))}
+            </div>
+        }
+
         let mostrar = null
         if (current !== null) {
             mostrar =  <div className="autocomplete-items-active">
@@ -423,7 +458,7 @@ export default class Senha extends Component {
         }
 
         let autocompleteSenha = null
-        if (pacientes) {
+        if (senhas) {
             autocompleteSenha = 
             <div>
                 <div className="actions">
@@ -441,7 +476,7 @@ export default class Senha extends Component {
                         autoComplete="off" /> 
                     </div>                                       
                 </div>                                   
-                    {mostrar}                                    
+                    {mostrarSenha}                                    
             </div>
         }         
 
@@ -484,8 +519,9 @@ export default class Senha extends Component {
                             <button type="button" onClick={this.gerarSenha}>
                                 Gerar Senha
                             </button>
-                        
+                                    
                         </div>
+                        {autocompleteSenha}
                     </div>
                 </div>
                 {modal}
