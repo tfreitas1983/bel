@@ -17,7 +17,14 @@ export default class PainelSenha extends Component {
   }
 
   componentDidMount() {
-   this.pegaSenhas()  
+    this.timerID = setInterval(
+      
+    () => this.pegaSenhas(),2000
+    )
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
   }
 
   pegaSenhas() {        
@@ -35,10 +42,10 @@ export default class PainelSenha extends Component {
 
   render() {
 
-    const { senhas, numero, local, currentSenha,currentIndexSenha} = this.state
+    //const { senhas, numero, local, currentSenha,currentIndexSenha} = this.state
 
     let filtro = (this.state.senhas).filter((item) => {
-      return item.status === "Chamada" || item.status === "Rechamada"
+      return (item.status === "Rechamada" || item.status === "Chamada"  )
     })
 
     let ultimas = filtro.slice(-4)
@@ -61,7 +68,7 @@ export default class PainelSenha extends Component {
   
     return (
       <div>
-        {mostrarSenha}
+        
         <div className="list-group">       
           <div className="painel" style={{display: 'flex', justifyContent: 'space-between', background: '#aaaaff'}}> 
               { ultima.map(item => (
@@ -72,7 +79,8 @@ export default class PainelSenha extends Component {
                 </div>
               ))}
           </div>  
-        </div>        
+        </div>   
+        {mostrarSenha}     
       </div>
     )
   }

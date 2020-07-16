@@ -158,7 +158,8 @@ export default class Senha extends Component {
 
     limpaCurrentSenha() {
         this.setState({           
-            
+           
+            buscaSenha: "",
             local: "",
             data_senha: "",
             status: ""
@@ -409,11 +410,8 @@ export default class Senha extends Component {
             selectedSala: "",
             numero: "",
             tipo: "",
-            buscaNome: "",
-            current: null,
+            buscaNome: "",            
             currentIndex: -1
-            
-            
         }) 
         this.limpaCurrentSenha()
         this.pegaPacientes()      
@@ -428,9 +426,13 @@ export default class Senha extends Component {
     }
 
     chamarSenha() {
-        if (this.state.guiche === "") {
+       /* if (this.state.guiche === "") {
             alert("Selecione seu guichê")
-        } else if (this.state.currentSenha) {
+            
+        }
+        */
+        
+        if (this.state.currentSenha.status === "Gerada") {
             var data = {
                 status: "Chamada"
             }
@@ -438,12 +440,50 @@ export default class Senha extends Component {
             .then(response => {
                 this.setState({
                     showModalSenha: false
-                })    
+                })  
+                this.pegaSenhas()
+              
             })
             .catch(e => {
                 console.log(e)
             })
-        }        
+        }  
+
+        if (this.state.currentSenha.status === "Chamada") {
+            var data = {
+                status: "Rechamada"
+            }
+            SenhaDataService.editar(this.state.currentSenha.id, data)
+            .then(response => {
+                this.setState({
+                    showModalSenha: false
+                })                   
+                this.pegaSenhas() 
+                
+            })
+            .catch(e => {
+                console.log(e)
+            })
+        }  
+
+        if (this.state.currentSenha.status === "Rechamada") {
+            var data = {
+                status: "Chamada"
+            }
+            SenhaDataService.editar(this.state.currentSenha.id, data)
+            .then(response => {
+                this.setState({
+                    showModalSenha: false
+                })                   
+                this.pegaSenhas() 
+                this.limpaCurrentSenha()
+            })
+            .catch(e => {
+                console.log(e)
+            })
+        }  
+        
+        
     }
 
 
