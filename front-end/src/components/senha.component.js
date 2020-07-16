@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
+import PainelSenha from './chamada.component'
 import SalaDataService from '../services/sala.service'
 import PacienteDataService from '../services/paciente.service'
 import SenhaDataService from '../services/senha.service'
+import GuicheDataService from '../services/guiche.service'
 import { Link } from "react-router-dom"
 import * as moment from 'moment'
 
@@ -13,8 +15,13 @@ export default class Senha extends Component {
         this.pegaSalas = this.pegaSalas.bind(this)
         this.ativaSala = this.ativaSala.bind(this)        
         this.estadoSelectSala = this.estadoSelectSala.bind(this)
+        this.pegaSenhas = this.pegaSenhas.bind(this)
         this.buscaSenha = this.buscaSenha.bind(this)
         this.estadoBuscaSenha = this.estadoBuscaSenha.bind(this)
+
+        this.pegaGuiches = this.pegaGuiches.bind(this)
+        this.ativaGuiche = this.ativaGuiche.bind(this)        
+        this.estadoSelectGuiche = this.estadoSelectGuiche.bind(this)
         
         this.pegaPacientes = this.pegaPacientes.bind(this)
         this.estadoBuscaNome = this.estadoBuscaNome.bind(this)
@@ -30,6 +37,8 @@ export default class Senha extends Component {
         this.gerarSenha = this.gerarSenha.bind(this)
         this.chamarSenha = this.chamarSenha.bind(this)
 
+        this.child = React.createRef()
+
         this.state = {
             senhas:[],
             buscaSenha: "",
@@ -42,7 +51,10 @@ export default class Senha extends Component {
             status: "",
             salas: [],
             currentSala: null,
-            filtro: [],
+            guiches: [],
+            guiche: "",
+            currentGuiche: null,
+            currentIndexGuiche: -1,
             currentIndexSala: -1,
             buscaDescricao: "",
             pacientes: [],
@@ -58,8 +70,11 @@ export default class Senha extends Component {
     componentDidMount() {
         this.pegaSalas() 
         this.pegaPacientes()   
-        this.pegaSenhas()    
+        this.pegaSenhas() 
+        this.pegaGuiches()   
     }
+
+
 
     pegaPacientes(page = 1) {        
         PacienteDataService.buscarTodos(page)
@@ -92,14 +107,26 @@ export default class Senha extends Component {
 
     pegaSalas() {        
         SalaDataService.buscarTodos()
-            .then(response => {
-                this.setState({
-                    salas: response.data
-                })            
-            })
-            .catch(e => {
-                console.log(e)
-            })
+        .then(response => {
+            this.setState({
+                salas: response.data
+            })            
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
+
+    pegaGuiches() {
+        GuicheDataService.buscarTodos()
+        .then(response => {
+            this.setState({
+                guiches: response.data
+            })            
+        })
+        .catch(e => {
+            console.log(e)
+        })
     }
 
     estadoBuscaNome(e) {
@@ -205,6 +232,13 @@ export default class Senha extends Component {
         })
     }
 
+    ativaGuiche(guiche, index) {
+        this.setState({
+            currentGuiche: guiche,
+            currentIndexGuiche: index
+        })
+    }
+
     ativaSenha(senha, index) {
         this.setState({
             currentSenha: senha,
@@ -222,8 +256,20 @@ export default class Senha extends Component {
         }))
         this.setState({
             local: selectedSala
-        })
-        
+        })        
+    }
+
+    estadoSelectGuiche (e) {
+        const selectedGuiche = e.target.value
+        this.setState(prevState => ({
+            currentGuiche: {
+                ...prevState.currentGuiche,
+                guiche: selectedGuiche                
+            }
+        })) 
+        this.setState({
+            guiche: selectedGuiche
+        })     
     }
 
     ativaPaciente(paciente, index) {
@@ -382,13 +428,29 @@ export default class Senha extends Component {
     }
 
     chamarSenha() {
-
+        if (this.state.guiche === "") {
+            alert("Selecione seu guichê")
+        } else if (this.state.currentSenha) {
+            var data = {
+                status: "Chamada"
+            }
+            SenhaDataService.editar(this.state.currentSenha.id, data)
+            .then(response => {
+                this.setState({
+                    showModalSenha: false
+                })    
+            })
+            .catch(e => {
+                console.log(e)
+            })
+        }        
     }
+
 
 
     render() {
         const { senhas, numero, local, buscaSenha, currentSenha, currentIndexSenha,
-            salas,  currentSala, currentIndexSala, 
+            salas,  currentSala, currentIndexSala, guiches, currentGuiche, currentIndexGuiche, 
             buscaNome, pacientes, info, page, current, currentIndex } = this.state
 
         //Reinderiza os números das páginas de acordo com o total delas
@@ -404,6 +466,12 @@ export default class Senha extends Component {
                 </li>
             )            
         } 
+
+        /*******************************************************************
+         * 
+         * Resultado da busca de senhas
+         * 
+         */
                 
         let mostrarSenha = null
         if (currentSenha !== null) {
@@ -412,7 +480,7 @@ export default class Senha extends Component {
                 <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
                     Reimprimir
                 </div>
-                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.chamarSenha}>
+                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
                     Chamar
                 </div>
               
@@ -430,13 +498,19 @@ export default class Senha extends Component {
                     <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
                         Reimprimir
                     </div> 
-                    <div style={{backgroundColor: '#555522', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.chamarSenha}>
+                    <div style={{backgroundColor: '#555522', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
                         Chamar
                     </div>                  
                 </div>
             ))}
             </div>
         }
+
+        /*******************************************************************
+         * 
+         * Resultado da busca de pacientes
+         * 
+         */
 
         let mostrar = null
         if (current !== null) {
@@ -458,7 +532,11 @@ export default class Senha extends Component {
             </div>
         }
 
-        
+        /*******************************************************************
+         * 
+         * Caixa de texto para busca de pacientes
+         * 
+         */
        
         let autocomplete = null
         if (pacientes) {
@@ -482,6 +560,12 @@ export default class Senha extends Component {
                     {mostrar}                                    
             </div>
         }         
+
+        /*******************************************************************
+         * 
+         * Modal Impressão de senha
+         * 
+         */
 
         let modal = null
         if(this.state.showModal === true) {
@@ -513,6 +597,12 @@ export default class Senha extends Component {
                 </div>
         }
 
+        /*******************************************************************
+         * 
+         * Modal Reimpressão de senha
+         * 
+         */
+
         let modalReimprimir = null
         if(this.state.showModalSenha === true) {
             modalReimprimir = 
@@ -543,6 +633,12 @@ export default class Senha extends Component {
                 </div>
         }
 
+        /*******************************************************************
+         * 
+         * Modal da chamada de senhas
+         * 
+         */
+
         let modalChamada = null
         if(this.state.showModalChamada === true) {
             modalChamada = 
@@ -565,16 +661,20 @@ export default class Senha extends Component {
                             Senha: {currentSenha.numero}
                         </label>  
                         <div className="noprint">                                  
-                            <button onClick={() => window.print()} className="btn btn-success">
-                                Imprimir
-                            </button>
+                        <div>                            
+                            <button onClick={this.chamarSenha()}>Chamar</button>
+                        </div>
                         </div>
                     </div>
                 </div>
         }
 
                 
-        
+        /*******************************************************************
+         * 
+         * Caixa de texto para a busca de senhas
+         * 
+         *******************************************************************/
 
         let autocompleteSenha = null
         if (senhas) {
@@ -602,8 +702,27 @@ export default class Senha extends Component {
 
         return (
             <div className="edit-form" style={{marginTop: 60+'px', width:1200+'px'}}>
-                <div className="noprint">
-                    <h1>Senha</h1>
+                <div className="noprint">                    
+                    <div className="actions">
+                        <h1>Senhas</h1> 
+                        <div className="actions">
+                            <label style={{marginRight:10+'px'}}>Guichê</label>                                                
+                            <select 
+                                className="form-control" 
+                                id="guiche" 
+                                name="guiche"      
+                                value={this.state.guiche}              
+                                onChange={this.estadoSelectGuiche} >
+                                <option value="">---Selecione---</option>  
+                                {guiches && guiches.map((guiche, index) => (
+                                    <option value={guiche.descricao} key={index} onClick={() => this.ativaGuiche(guiche, index)}>
+                                        {guiche.descricao}
+                                    </option>
+                                ))}                             
+                            </select>
+                        </div>
+                    </div>
+
                     <div className="col-md-6">
                         <div className="adicionar">                  
                             <Link to={"/pacientes/adicionar"}>Novo Paciente</Link>
@@ -646,8 +765,11 @@ export default class Senha extends Component {
                         {autocompleteSenha}
                     </div>
                 </div>
-                {modal} {modalReimprimir}
+                {modal} {modalReimprimir} {modalChamada}
             </div>
         )
     }
 }
+
+
+

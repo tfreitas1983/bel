@@ -523,3 +523,13 @@ table, th, td {
   height: 25px;
   width: 25px;  
 }
+
+.painel  {
+  margin-top: 60px;
+  border: 1px solid #2b313b;
+  font-size: 50px;
+}
+
+.nav {
+  visibility: false;
+}
