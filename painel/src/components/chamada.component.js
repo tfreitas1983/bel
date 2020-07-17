@@ -47,12 +47,10 @@ export default class PainelSenha extends Component {
     let filtro = (this.state.senhas).filter((item) => {
       return (item.status === "Rechamada" || item.status === "Chamada"  )
     })
-
-    let ultimas = filtro.slice(-4)
-
-    let ultima = ultimas.slice(-1)
-    console.log("Ultima", ultima)
-
+    let ordem = filtro.sort(function(a, b){return  b.ordem - a.ordem})
+    let ultimas = ordem.slice(-4)
+   
+  
     let mostrarSenha = 
       <div className="list-group">
      { ultimas && ultimas.map((senha, index) => (
@@ -60,26 +58,15 @@ export default class PainelSenha extends Component {
               key={index} style={{display: 'flex', justifyContent: 'space-between'}}> 
               SENHA {senha.numero} -
               {senha.paciente} - 
-              {senha.local}                                   
+              {senha.local}  -
+              {senha.ordem}                                 
           </div>
       ))}
       </div>
      
   
     return (
-      <div>
-        
-        <div className="list-group">       
-          <div className="painel" style={{display: 'flex', justifyContent: 'space-between', background: '#aaaaff'}}> 
-              { ultima.map(item => (
-                <div>
-                  <h4>SENHA {item.numero} </h4>
-                  <h4> {item.paciente} </h4>
-                  <h4> {item.local} </h4>  
-                </div>
-              ))}
-          </div>  
-        </div>   
+      <div>       
         {mostrarSenha}     
       </div>
     )

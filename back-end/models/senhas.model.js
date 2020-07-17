@@ -7,6 +7,7 @@ module.exports = mongoose => {
         local: String,
         data_senha: Date,
         status: String,
+        ordem: Number,
         situacao: Boolean
     },
         { timestamps: true }
