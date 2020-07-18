@@ -143,7 +143,7 @@ export default class Senha extends Component {
 
     estadoBuscaSenha(e) {
         const buscaSenha = e.target.value
-        this.buscaNome()
+        this.buscaSenha()
         this.limpaCurrentSenha()
         this.setState({
             buscaSenha: buscaSenha
@@ -876,7 +876,7 @@ export default class Senha extends Component {
                         <input 
                         type="text"
                         className="autocomplete" 
-                        placeholder={"Digite o número da senha"} 
+                        placeholder={"Digite o nome do paciente"} 
                         onClick={this.buscaSenha} 
                         onKeyUp={this.buscaSenha} 
                         id="pacientesenha" 

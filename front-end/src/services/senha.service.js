@@ -17,8 +17,8 @@ class SenhaDataService {
         return http.put(`/senhas/${id}`, data)
     }
 
-    buscarSenha(numero) {
-        return http.get(`/senhas?numero=${numero}`)
+    buscarSenha(paciente, page) {
+        return http.get(`/senhas?paciente=${paciente}&page=${page}`)
     } 
 }
 

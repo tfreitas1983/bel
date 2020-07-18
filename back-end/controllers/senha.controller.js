@@ -32,14 +32,13 @@ exports.cadastrar = (req, res) => {
 
 exports.buscarTodos = (req,res) => {
     const {page = 1} = req.query;
-    const numero = req.query.numero
-    var condition = numero ? { numero: { $regex: new RegExp(numero), $options: "i" } } : {}
+    const paciente = req.query.paciente
+    var condition = paciente ? { paciente: { $regex: new RegExp(paciente), $options: "i" } } : {}
 
-
-    //Verifica se foi passado o nome na busca
-    if (numero) {
+    //Verifica se foi passado o número na busca
+    if (paciente) {
         var query = Senha.find(condition)
-    } if (!numero) {
+    } if (!paciente) {
         var query = {}
     }
     
