@@ -6,6 +6,7 @@ import SenhaDataService from '../services/senha.service'
 import GuicheDataService from '../services/guiche.service'
 import { Link } from "react-router-dom"
 import * as moment from 'moment'
+import notify from '../assets/notify.wav'
 
 
 export default class Senha extends Component {
@@ -37,8 +38,10 @@ export default class Senha extends Component {
 
         this.gerarSenha = this.gerarSenha.bind(this)
         this.chamarSenha = this.chamarSenha.bind(this)
+        this.rechamarSenha = this.rechamarSenha.bind(this)
+        this.ultimaChamada = this.ultimaChamada.bind(this)
 
-        this.child = React.createRef()
+        this.togglePlay = this.togglePlay.bind(this)
 
         this.state = {
             senhas:[],
@@ -64,7 +67,8 @@ export default class Senha extends Component {
             current: null,
             currentIndex: -1,
             selectedPage: null,
-            buscaNome: ""
+            buscaNome: "",
+            play: false
         }
     }
 
@@ -74,8 +78,6 @@ export default class Senha extends Component {
         this.pegaSenhas() 
         this.pegaGuiches()   
     }
-
-
 
     pegaPacientes(page = 1) {        
         PacienteDataService.buscarTodos(page)
@@ -444,7 +446,7 @@ export default class Senha extends Component {
                 if (b.ordem > a.ordem) a = b
                 return a
             }) 
-            console.log(ultima)
+           
             var data = {
                 status: "Chamada",
                 ordem: ultima.ordem+soma
@@ -453,10 +455,15 @@ export default class Senha extends Component {
             SenhaDataService.editar(this.state.currentSenha.id, data)
             .then(response => {
                 this.setState({
-                    showModalChamada: false
+                    showModalChamada: false,
+                    currentSenha: null,
+                    currentIndexSenha: -1
                 })  
-                this.pegaSenhas()
-              
+                this.pegaSenhas()  
+                this.togglePlay()                
+                this.setState({
+                    play: true
+                })            
             })
             .catch(e => {
                 console.log(e)
@@ -464,56 +471,89 @@ export default class Senha extends Component {
         }  
     }
 
-    rechamarSenha() {
+    rechamarSenha() {       
 
-        if (this.state.currentSenha.status === "Chamada") {
+            let filtroOrdem = (this.state.senhas).filter((item) => {
+                return item.ordem > 0
+            })
 
-            let ultima = this.state.senhas.reduce((a,b) => {
+            let soma = 1
+            let ultima = filtroOrdem.reduce((a,b) => {
                 if (b.ordem > a.ordem) a = b
                 return a
-            })
+            }) 
+
             var data = {
                 status: "Rechamada",
-                ordem: ultima.ordem+1
+                ordem: ultima.ordem+soma
             }
             SenhaDataService.editar(this.state.currentSenha.id, data)
             .then(response => {
                 this.setState({
-                    showModalSenha: false
+                    showModalChamada: false,
+                    currentSenha: null,
+                    currentIndexSenha: -1
                 })                   
                 this.pegaSenhas() 
-                
+                this.togglePlay()                
+                this.setState({
+                    play: true
+                })
             })
             .catch(e => {
                 console.log(e)
             })
-        }         
+                 
     }
 
     ultimaChamada() {
-    
-        if (this.state.currentSenha.status === "Rechamada") {
-            let ultima = this.state.senhas.reduce((a,b) => {
+            
+            let filtroOrdem = (this.state.senhas).filter((item) => {
+                return item.ordem > 0
+            })
+
+            let soma = 1
+            let ultima = filtroOrdem.reduce((a,b) => {
                 if (b.ordem > a.ordem) a = b
                 return a
-            })
+            }) 
+            
+
             var data = {
-                ordem: ultima+1
+                ordem: ultima.ordem+soma
             }
+
+            console.log("Data", data)
+
             SenhaDataService.editar(this.state.currentSenha.id, data)
             .then(response => {
                 this.setState({
-                    showModalSenha: false
+                    showModalChamada: false,
+                    currentSenha: null,
+                    currentIndexSenha: -1
                 })                   
-                this.pegaSenhas() 
-                
+                this.pegaSenhas()
+
+                this.togglePlay()                
+                this.setState({
+                    play: true
+                })                                   
             })
             .catch(e => {
                 console.log(e)
             })
-        }
+            this.setState({
+                play:false
+            } ) 
     }
 
+    audio = new Audio(notify)
+
+    togglePlay = () => {
+        this.setState({ play: !this.state.play }, () => {
+          this.state.play ? this.audio.play() : this.audio.pause();
+        });
+    }
 
 
     render() {
@@ -541,34 +581,7 @@ export default class Senha extends Component {
          ******************************************************************/
                 
         let mostrarSenha = null
-        if (currentSenha !== null) {
-            mostrarSenha =  <div className="autocomplete-items-active" >
-                <h1>Teste</h1>
-                SENHA  {currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
-                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
-                    Reimprimir
-                </div>
-                
-                <div>
-                    (if (currentSenha.status === "Gerada") 
-                    <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.chamarSenha}>
-                        Chamar
-                    </div>
-                    
-                    if (currentSenha.status === "Chamada") 
-                    <div style={{backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.rechamarSenha}>
-                        Chamar 2vez
-                    </div>
-                    
-                    if (currentSenha.status === "Rechamada") 
-                    <div style={{backgroundColor: '#ff7322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.ultimaChamada}>
-                        Rechamar
-                    </div>
-                    )
-                </div>
-                
-            </div>
-        } 
+         
         
         if (currentSenha === null || buscaSenha === '') {            
             mostrarSenha = 
@@ -578,14 +591,51 @@ export default class Senha extends Component {
                 onClick={() => this.ativaSenha(senha, index)} 
                 key={index} style={{display: 'flex', justifyContent: 'space-between'}}> 
                     SENHA {senha.numero} - {senha.paciente} - {senha.local}  - {senha.status} - {senha.ordem}  
-                    <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
+                    <div style={{backgroundColor: '#aaaf22', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
                         Reimprimir
                     </div> 
-                    <div style={{backgroundColor: '#555522', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
-                        Chamar
-                    </div>                  
+                              
                 </div>
             ))}
+            </div>
+        }
+
+        if (currentSenha !== null && currentSenha.status === "Gerada") {
+            mostrarSenha =  <div className="autocomplete-items-active" >
+                
+                SENHA  {currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
+                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
+                    Reimprimir
+                </div>
+                <div style={{backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
+                    Chamar
+                </div>
+            </div>
+        }
+
+        if (currentSenha !== null && currentSenha.status === "Chamada") {
+            mostrarSenha =  <div className="autocomplete-items-active" >
+                
+                SENHA  {currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
+                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
+                    Reimprimir
+                </div>
+                <div style={{backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
+                    Chamar 2a vez
+                </div>
+            </div>
+        }
+
+        if (currentSenha !== null && currentSenha.status === "Rechamada") {
+            mostrarSenha =  <div className="autocomplete-items-active" >
+                
+                SENHA  {currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
+                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
+                    Reimprimir
+                </div>
+                <div style={{backgroundColor: '#ff7322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
+                    Rechamar
+                </div>
             </div>
         }
 
@@ -724,6 +774,7 @@ export default class Senha extends Component {
 
         let modalChamada = null
         if(this.state.showModalChamada === true) {
+            if (currentSenha.status === "Gerada") {
             modalChamada = 
                 <div className="modal_bg" onKeyUp={this.handleKeyPress}>
                     <div className="modal" onKeyUp={this.handleKeyPress}>
@@ -750,6 +801,63 @@ export default class Senha extends Component {
                         </div>
                     </div>
                 </div>
+            }
+            if (currentSenha.status === "Chamada") {
+                modalChamada = 
+                    <div className="modal_bg" onKeyUp={this.handleKeyPress}>
+                        <div className="modal" onKeyUp={this.handleKeyPress}>
+                            <div className="noprint">
+                                <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalChamada}>X</button>
+                            </div>
+                        <h2 style={{marginLeft: 15+'px'}}> Clínica Imagem</h2>
+                            
+                            <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
+                                {currentSenha.paciente}
+                            </label>
+                           
+                            <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
+                                {currentSenha.local}
+                            </label>
+                            
+                            <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
+                                Senha: {currentSenha.numero}
+                            </label>  
+                            <div className="noprint">                                  
+                            <div>                            
+                                <button onClick={this.rechamarSenha}>Chamar 2a vez</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                if (currentSenha.status === "Rechamada") {
+                    modalChamada = 
+                        <div className="modal_bg" onKeyUp={this.handleKeyPress}>
+                            <div className="modal" onKeyUp={this.handleKeyPress}>
+                                <div className="noprint">
+                                    <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalChamada}>X</button>
+                                </div>
+                            <h2 style={{marginLeft: 15+'px'}}> Clínica Imagem</h2>
+                                
+                                <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
+                                    {currentSenha.paciente}
+                                </label>
+                               
+                                <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
+                                    {currentSenha.local}
+                                </label>
+                                
+                                <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
+                                    Senha: {currentSenha.numero}
+                                </label>  
+                                <div className="noprint">                                  
+                                <div>                            
+                                    <button onClick={this.ultimaChamada}>Rechamar</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
         }
 
                 
@@ -788,7 +896,7 @@ export default class Senha extends Component {
                 <div className="noprint">                    
                     <div className="actions">
                         <h1>Senhas</h1> 
-                        <h1>Teste</h1>
+                       
                         <div className="actions">
                             <label style={{marginRight:10+'px'}}>Guichê</label>                                                
                             <select 
