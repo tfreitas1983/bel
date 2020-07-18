@@ -42,9 +42,9 @@ export default class PainelSenha extends Component {
 
   render() {
 
-    //const { senhas, numero, local, currentSenha,currentIndexSenha} = this.state
+    const { senhas} = this.state
 
-    let filtro = (this.state.senhas).filter((item) => {
+    let filtro = (senhas).filter((item) => {
       return (item.status === "Rechamada" || item.status === "Chamada"  )
     })
     let ordem = filtro.sort(function(a, b){return  b.ordem - a.ordem})

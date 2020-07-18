@@ -439,21 +439,20 @@ export default class Senha extends Component {
                 return item.ordem > 0
             })
 
-            console.log("FiltroOrdem",filtroOrdem)
             let soma = 1
-            /* let ultima = filtroOrdem.reduce((a,b) => {
+            let ultima = filtroOrdem.reduce((a,b) => {
                 if (b.ordem > a.ordem) a = b
                 return a
-            }) */
-          //  console.log(ultima)
+            }) 
+            console.log(ultima)
             var data = {
                 status: "Chamada",
-               // ordem: ultima.ordem+soma
+                ordem: ultima.ordem+soma
             }
             SenhaDataService.editar(this.state.currentSenha.id, data)
             .then(response => {
                 this.setState({
-                    showModalSenha: false
+                    showModalChamada: false
                 })  
                 this.pegaSenhas()
               
@@ -730,7 +729,7 @@ export default class Senha extends Component {
                         </label>  
                         <div className="noprint">                                  
                         <div>                            
-                            <button onClick={this.chamarSenha()}>Chamar</button>
+                            <button onClick={this.chamarSenha}>Chamar</button>
                         </div>
                         </div>
                     </div>
@@ -756,7 +755,7 @@ export default class Senha extends Component {
                         placeholder={"Digite o número da senha"} 
                         onClick={this.buscaSenha} 
                         onKeyUp={this.buscaSenha} 
-                        id="paciente" 
+                        id="pacientesenha" 
                         name="paciente" 
                         value={this.state.buscaSenha} 
                         onChange={this.estadoBuscaSenha}
