@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import PainelSenha from './chamada.component'
+
 import SalaDataService from '../services/sala.service'
 import PacienteDataService from '../services/paciente.service'
 import SenhaDataService from '../services/senha.service'
@@ -449,6 +449,7 @@ export default class Senha extends Component {
                 status: "Chamada",
                 ordem: ultima.ordem+soma
             }
+
             SenhaDataService.editar(this.state.currentSenha.id, data)
             .then(response => {
                 this.setState({
@@ -517,8 +518,7 @@ export default class Senha extends Component {
 
     render() {
         const { senhas, numero, local, buscaSenha, currentSenha, currentIndexSenha,
-            salas,  currentSala, currentIndexSala, guiches, currentGuiche, currentIndexGuiche, 
-            buscaNome, pacientes, info, page, current, currentIndex } = this.state
+            salas, guiches, buscaNome, pacientes, info, page, current, currentIndex } = this.state
 
         //Reinderiza os números das páginas de acordo com o total delas
         //Deixando selecionado a página corrente no array paginas
@@ -536,21 +536,37 @@ export default class Senha extends Component {
 
         /*******************************************************************
          * 
-         * Resultado da busca de senhas
+         * Busca de senhas e senhas geradas
          * 
-         */
+         ******************************************************************/
                 
         let mostrarSenha = null
         if (currentSenha !== null) {
             mostrarSenha =  <div className="autocomplete-items-active" >
+                <h1>Teste</h1>
                 SENHA  {currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
-                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
+                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
                     Reimprimir
                 </div>
-                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.chamarSenha}>
-                    Chamar
+                
+                <div>
+                    (if (currentSenha.status === "Gerada") 
+                    <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.chamarSenha}>
+                        Chamar
+                    </div>
+                    
+                    if (currentSenha.status === "Chamada") 
+                    <div style={{backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.rechamarSenha}>
+                        Chamar 2vez
+                    </div>
+                    
+                    if (currentSenha.status === "Rechamada") 
+                    <div style={{backgroundColor: '#ff7322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.ultimaChamada}>
+                        Rechamar
+                    </div>
+                    )
                 </div>
-              
+                
             </div>
         } 
         
@@ -772,6 +788,7 @@ export default class Senha extends Component {
                 <div className="noprint">                    
                     <div className="actions">
                         <h1>Senhas</h1> 
+                        <h1>Teste</h1>
                         <div className="actions">
                             <label style={{marginRight:10+'px'}}>Guichê</label>                                                
                             <select 

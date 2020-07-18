@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ClinicaDataService from "../services/clinica.service"
 import PacienteDataService from "../services/paciente.service"
-import { Link } from "react-router-dom"
+
 
 
 export default class Clinica extends Component {

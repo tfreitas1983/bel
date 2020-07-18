@@ -59,7 +59,7 @@ export default class GuichesLista extends Component {
     buscaDescricao() {
         GuicheDataService.buscarDescricao(this.state.buscaDescricao)
         .then(response => {
-            const guiches = response.data 
+            
             this.setState({
                 guiches: response.data                      
             })    

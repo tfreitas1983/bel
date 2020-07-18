@@ -27,7 +27,7 @@ import PainelLista from './components/list-painel.component';
 import Cadastros from './components/cadastro.component';
 import Senha from './components/senha.component';
 
-import PainelSenha from './components/chamada.component'
+
 
 class App extends Component {
   render() {
@@ -106,7 +106,7 @@ class App extends Component {
               <Route exact path="/cadastros/painel" component={PainelLista} />
               <Route exact path="/cadastros/painel/adicionar" component={AdicionarPainel} />
               <Route exact path="/cadastros/painel/:id" component={Painel} />
-              <Route exact path="/painel/" component={PainelSenha} />
+              
             </Switch>
           </div>
         </div>

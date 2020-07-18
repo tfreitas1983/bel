@@ -59,7 +59,7 @@ export default class SalasLista extends Component {
     buscaDescricao() {
         SalaDataService.buscarDescricao(this.state.buscaDescricao)
         .then(response => {
-            const salas = response.data 
+             
             this.setState({
                 salas: response.data                      
             })    

@@ -446,8 +446,7 @@ export default class AdicionarPaciente extends Component {
                             id="cidade" 
                             value={this.state.cidade} 
                             onChange={this.estadoCidade} 
-                            name="cidade"
-                            value="Belford Roxo" />
+                            name="cidade"  />
                         </div>
                     
                         <div className="row">
@@ -459,8 +458,7 @@ export default class AdicionarPaciente extends Component {
                                 id="uf" 
                                 value={this.state.uf} 
                                 onChange={this.estadoUf} 
-                                name="uf" 
-                                value="RJ"/>                            
+                                name="uf" />                            
                             </div>                        
                             <div className="col-md-6" style={{marginLeft: 98+'px', marginTop: 10+'px', padding: 0}}>
                                 <label htmlFor="cep"> CEP </label>

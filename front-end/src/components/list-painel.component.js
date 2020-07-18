@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PainelDataService from "../services/painel.service"
 import { Link } from "react-router-dom"
-import * as moment from 'moment'
+
 
 export default class PainelLista extends Component {
     constructor(props) {
@@ -59,7 +59,7 @@ export default class PainelLista extends Component {
     buscaDescricao() {
         PainelDataService.buscarDescricao(this.state.buscaDescricao)
         .then(response => {
-            const guiches = response.data 
+            
             this.setState({
                 paineis: response.data                      
             })    
