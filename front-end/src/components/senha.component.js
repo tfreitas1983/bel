@@ -438,15 +438,17 @@ export default class Senha extends Component {
             let filtroOrdem = (this.state.senhas).filter((item) => {
                 return item.ordem > 0
             })
+
+            console.log("FiltroOrdem",filtroOrdem)
             let soma = 1
-            let ultima = filtroOrdem.reduce((a,b) => {
+            /* let ultima = filtroOrdem.reduce((a,b) => {
                 if (b.ordem > a.ordem) a = b
                 return a
-            })
-            console.log(ultima)
+            }) */
+          //  console.log(ultima)
             var data = {
                 status: "Chamada",
-                ordem: ultima.ordem+soma
+               // ordem: ultima.ordem+soma
             }
             SenhaDataService.editar(this.state.currentSenha.id, data)
             .then(response => {
@@ -546,7 +548,7 @@ export default class Senha extends Component {
                 <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
                     Reimprimir
                 </div>
-                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
+                <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer',margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.chamarSenha}>
                     Chamar
                 </div>
               
