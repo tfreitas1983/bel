@@ -42,14 +42,15 @@ export default class PainelSenha extends Component {
 
   render() {
 
-    const { senhas} = this.state
+    const { senhas } = this.state
 
     let filtro = (senhas).filter((item) => {
       return (item.status === "Rechamada" || item.status === "Chamada"  )
     })
     let ordem = filtro.sort(function(a, b){return  b.ordem - a.ordem})
-    let ultimas = ordem.slice(-4)
-   
+    console.log("Ordem",ordem)
+    let ultimas = ordem.slice(0,4)
+   console.log("Ultimas",ultimas)
   
     let mostrarSenha = 
       <div className="list-group">
