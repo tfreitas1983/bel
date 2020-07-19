@@ -41,8 +41,6 @@ export default class Senha extends Component {
         this.rechamarSenha = this.rechamarSenha.bind(this)
         this.ultimaChamada = this.ultimaChamada.bind(this)
 
-        this.togglePlay = this.togglePlay.bind(this)
-
         this.state = {
             senhas:[],
             buscaSenha: "",
@@ -67,8 +65,7 @@ export default class Senha extends Component {
             current: null,
             currentIndex: -1,
             selectedPage: null,
-            buscaNome: "",
-            play: false
+            buscaNome: ""
         }
     }
 
@@ -77,6 +74,7 @@ export default class Senha extends Component {
         this.pegaPacientes()   
         this.pegaSenhas() 
         this.pegaGuiches()   
+        this.showModalGuiche()
     }
 
     pegaPacientes(page = 1) {        
@@ -144,8 +142,10 @@ export default class Senha extends Component {
     estadoBuscaSenha(e) {
         const buscaSenha = e.target.value
         this.buscaSenha()
-        this.limpaCurrentSenha()
+        
         this.setState({
+            currentIndexSenha: -1,
+            currentSenha: null,
             buscaSenha: buscaSenha
         })
     }
@@ -324,7 +324,8 @@ export default class Senha extends Component {
                 this.setState({
                     numero: (maior.numero)+soma,
                     tipo: "exame",
-                    paciente: this.state.current.nome
+                    paciente: this.state.current.nome,
+                    sigla: this.state.currentSala.sigla
                 })                
             }   
             
@@ -332,7 +333,8 @@ export default class Senha extends Component {
                 this.setState({
                     numero: soma,
                     tipo: "exame",
-                    paciente: this.state.current.nome
+                    paciente: this.state.current.nome,
+                    sigla: this.state.currentSala.sigla
                 })
             }
         }
@@ -340,7 +342,9 @@ export default class Senha extends Component {
             numero: this.state.numero,
             paciente: this.state.current.nome,
             tipo: this.state.tipo,
-            local: this.state.currentSala.sala,          
+            local: this.state.currentSala.sala,  
+            sigla: this.state.currentSala.sigla, 
+            guiche: this.state.currentGuiche.descricao,     
             status: "Gerada",
             data_senha: new Date().toString(),
             ordem: 0
@@ -355,7 +359,9 @@ export default class Senha extends Component {
                 paciente: response.data.paciente,
                 tipo: response.data.tipo,
                 local: response.data.local,
-                data_senha: response.data.data_senha,                    
+                data_senha: response.data.data_senha,
+                sigla: response.data.sigla,    
+                guiche: response.data.guiche,         
                 status: response.data.status,
                 situacao: response.data.situacao,
                 submitted: true                
@@ -370,9 +376,14 @@ export default class Senha extends Component {
         })         
     }
 
+    showModalGuiche = () => {
+        this.setState({ showModalGuiche: true })
+      }
+
     showModal = () => {
         this.setState({ showModal: true })
-      }
+      
+    }
 
     showModalSenha = () => {
         this.setState({ showModalSenha: true })
@@ -422,6 +433,26 @@ export default class Senha extends Component {
         this.pegaSenhas()
     }
 
+    hideModalGuiche = () => {
+        this.setState({ 
+            showModalGuiche: false,
+            currentSenha: null,
+            currentSala: null,
+            current: null,
+            currentGuiche: null,
+            currentIndexGuiche: -1,
+            selectedSala: "",
+            numero: "",
+            tipo: "",
+            buscaSenha: "", 
+            buscaNome: "",
+            currentIndexSenha: -1
+        }) 
+        this.limpaCurrentSenha()
+        this.pegaPacientes()      
+        this.pegaSenhas()
+    }
+
     handleKeyPress = (event) => {
         if(event.key === 27){
           this.hideModal()
@@ -460,10 +491,7 @@ export default class Senha extends Component {
                     currentIndexSenha: -1
                 })  
                 this.pegaSenhas()  
-                this.togglePlay()                
-                this.setState({
-                    play: true
-                })            
+                           
             })
             .catch(e => {
                 console.log(e)
@@ -495,10 +523,7 @@ export default class Senha extends Component {
                     currentIndexSenha: -1
                 })                   
                 this.pegaSenhas() 
-                this.togglePlay()                
-                this.setState({
-                    play: true
-                })
+                
             })
             .catch(e => {
                 console.log(e)
@@ -517,7 +542,6 @@ export default class Senha extends Component {
                 if (b.ordem > a.ordem) a = b
                 return a
             }) 
-            
 
             var data = {
                 ordem: ultima.ordem+soma
@@ -533,11 +557,7 @@ export default class Senha extends Component {
                     currentIndexSenha: -1
                 })                   
                 this.pegaSenhas()
-
-                this.togglePlay()                
-                this.setState({
-                    play: true
-                })                                   
+                                 
             })
             .catch(e => {
                 console.log(e)
@@ -545,14 +565,6 @@ export default class Senha extends Component {
             this.setState({
                 play:false
             } ) 
-    }
-
-    audio = new Audio(notify)
-
-    togglePlay = () => {
-        this.setState({ play: !this.state.play }, () => {
-          this.state.play ? this.audio.play() : this.audio.pause();
-        });
     }
 
 
@@ -590,7 +602,7 @@ export default class Senha extends Component {
                 <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")} 
                 onClick={() => this.ativaSenha(senha, index)} 
                 key={index} style={{display: 'flex', justifyContent: 'space-between'}}> 
-                    SENHA {senha.numero} - {senha.paciente} - {senha.local}  - {senha.status} - {senha.ordem}  
+                    SENHA {senha.sigla}{senha.numero} - {senha.paciente} - {senha.local}  - {senha.status}
                     <div style={{backgroundColor: '#aaaf22', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
                         Reimprimir
                     </div> 
@@ -603,7 +615,7 @@ export default class Senha extends Component {
         if (currentSenha !== null && currentSenha.status === "Gerada") {
             mostrarSenha =  <div className="autocomplete-items-active" >
                 
-                SENHA  {currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
+        SENHA  {currentSenha.sigla}{currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
                 <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
                     Reimprimir
                 </div>
@@ -616,7 +628,7 @@ export default class Senha extends Component {
         if (currentSenha !== null && currentSenha.status === "Chamada") {
             mostrarSenha =  <div className="autocomplete-items-active" >
                 
-                SENHA  {currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
+                SENHA  {currentSenha.sigla}{currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
                 <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
                     Reimprimir
                 </div>
@@ -629,7 +641,7 @@ export default class Senha extends Component {
         if (currentSenha !== null && currentSenha.status === "Rechamada") {
             mostrarSenha =  <div className="autocomplete-items-active" >
                 
-                SENHA  {currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
+                SENHA  {currentSenha.sigla}{currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
                 <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
                     Reimprimir
                 </div>
@@ -696,9 +708,9 @@ export default class Senha extends Component {
 
         /*******************************************************************
          * 
-         * Modal Impressão de senha
+         *                      MODAL IMPRESSÃO DE SENHA
          * 
-         */
+         ******************************************************************/
 
         let modal = null
         if(this.state.showModal === true) {
@@ -719,7 +731,7 @@ export default class Senha extends Component {
                         </label>
                         
                         <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
-                            Senha: {numero}
+                            Senha: {currentSenha.sigla}{numero}
                         </label>  
                         <div className="noprint">                                  
                             <button onClick={() => window.print()} className="btn btn-success">
@@ -732,9 +744,9 @@ export default class Senha extends Component {
 
         /*******************************************************************
          * 
-         * Modal Reimpressão de senha
+         *                  MODAL REIMPRESSÃO DE SENHA
          * 
-         */
+         ******************************************************************/
 
         let modalReimprimir = null
         if(this.state.showModalSenha === true) {
@@ -755,7 +767,7 @@ export default class Senha extends Component {
                         </label>
                         
                         <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
-                            Senha: {currentSenha.numero}
+                            Senha: {currentSenha.sigla}{currentSenha.numero}
                         </label>  
                         <div className="noprint">                                  
                             <button onClick={() => window.print()} className="btn btn-success">
@@ -768,9 +780,9 @@ export default class Senha extends Component {
 
         /*******************************************************************
          * 
-         * Modal da chamada de senhas
+         *                     MODAL DE CHAMADA DE SENHAS
          * 
-         */
+         *******************************************************************/
 
         let modalChamada = null
         if(this.state.showModalChamada === true) {
@@ -792,7 +804,7 @@ export default class Senha extends Component {
                         </label>
                         
                         <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
-                            Senha: {currentSenha.numero}
+                            Senha: {currentSenha.sigla}{currentSenha.numero}
                         </label>  
                         <div className="noprint">                                  
                         <div>                            
@@ -820,7 +832,7 @@ export default class Senha extends Component {
                             </label>
                             
                             <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
-                                Senha: {currentSenha.numero}
+                                Senha: {currentSenha.sigla}{currentSenha.numero}
                             </label>  
                             <div className="noprint">                                  
                             <div>                            
@@ -848,7 +860,7 @@ export default class Senha extends Component {
                                 </label>
                                 
                                 <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
-                                    Senha: {currentSenha.numero}
+                                    Senha: {currentSenha.sigla}{currentSenha.numero}
                                 </label>  
                                 <div className="noprint">                                  
                                 <div>                            
@@ -888,7 +900,41 @@ export default class Senha extends Component {
                 </div>                                   
                     {mostrarSenha}                                    
             </div>
-        }         
+        }  
+        
+        /******************************************************************
+         * 
+         *                MODAL DE GUICHÊ DE RECEPÇÃO
+         * 
+         *****************************************************************/
+        
+        let modalGuiche = null
+        
+        if (this.state.showModalGuiche === true) {
+            <div className="modal_bg" onKeyUp={this.handleKeyPress}>
+                <div className="modal" onKeyUp={this.handleKeyPress}>
+                    <div className="noprint">
+                        <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalGuiche}>X</button>
+                    </div>
+                    <div className="actions">
+                        <label style={{marginRight:10+'px'}}>Guichê</label>                                                
+                        <select 
+                            className="form-control" 
+                            id="guiche" 
+                            name="guiche"      
+                            value={this.state.guiche}              
+                            onChange={this.estadoSelectGuiche} >
+                            <option value="">---Selecione---</option>  
+                            {guiches && guiches.map((guiche, index) => (
+                                <option value={guiche.descricao} key={index} onClick={() => this.ativaGuiche(guiche, index)}>
+                                    {guiche.descricao}
+                                </option>
+                            ))}                             
+                        </select>
+                    </div>
+                </div>
+            </div>
+        }
 
 
         return (
@@ -957,7 +1003,7 @@ export default class Senha extends Component {
                         {autocompleteSenha}
                     </div>
                 </div>
-                {modal} {modalReimprimir} {modalChamada}
+                {modal} {modalReimprimir} {modalChamada} {modalGuiche}
             </div>
         )
     }

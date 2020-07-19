@@ -524,8 +524,42 @@ table, th, td {
   width: 25px;  
 }
 
-.painel  {
-  margin-top: 60px;
-  border: 1px solid #2b313b;
+.primeira {
+  display: grid;
+  justify-content: space-between;
+  border: 1px solid #742f07;
   font-size: 50px;
+  margin: 7px 0 0 7px;
+  color: #d4d4d4;
+  background: #cc3813;
+}
+
+.painel  {
+  display: grid;
+  justify-content: space-between;
+  border: 1px solid #742f07;
+  font-size: 50px;
+  margin: 7px 0 0 7px;
+  color: #d4d4d4;
+  background: #bd561a;
+}
+
+.topo {
+  border: 1px solid #742f07;
+  background: #bd561a;
+  height: 60px;
+  margin-bottom: 40px;
+}
+
+.topo h1 {
+  margin-left: 200px;
+  color: #FFF;
+}
+
+.topo img {
+  display: flex;
+  position: absolute;
+  top: 0;
+  height: 100px;
+
 }

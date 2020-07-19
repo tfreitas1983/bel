@@ -13,6 +13,8 @@ exports.cadastrar = (req, res) => {
         tipo: req.body.tipo,
         data_senha: req.body.data_senha,
         local: req.body.local,
+        guiche: req.body.guiche,
+        sigla: req.body.sigla,
         status: req.body.status,
         ordem: req.body.ordem,
         situacao: req.body.situacao ? req.body.situacao: true

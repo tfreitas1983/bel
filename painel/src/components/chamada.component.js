@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
 import SenhaDataService from '../services/senha.service'
+import notify from '../assets/notify.wav'
+import logo from '../assets/logo.png'
 
 export default class PainelSenha extends Component {
   constructor(props) {
     super(props)
     this.pegaSenhas = this.pegaSenhas.bind(this)
+    this.ordem = this.ordem.bind(this)
+    this.togglePlay = this.togglePlay.bind(this)
 
     this.state = {
       senhas:[],
@@ -12,14 +16,18 @@ export default class PainelSenha extends Component {
       currentIndexSenha: -1,
       numero: "",
       local: "",
-      paciente: ""
+      paciente: "",
+      play: false,
+      ordem: 0
     } 
   }
 
   componentDidMount() {
-    this.timerID = setInterval(
-      
-    () => this.pegaSenhas(),2000
+    this.timerID = setInterval(      
+      () => this.pegaSenhas(),2000
+    )
+    this.timerID = setInterval(      
+      () => this.ordem(),500
     )
   }
 
@@ -37,8 +45,38 @@ export default class PainelSenha extends Component {
     .catch(e => {
         console.log(e)
     })
-}
+  }
 
+  ordem() {
+
+    if (this.state.senhas.length > 0) {
+      const senhasOrdem = this.state.senhas.sort(function(a, b){return  b.ordem - a.ordem})
+      
+      const ultimoRegistro = senhasOrdem.slice(0,1)
+    
+
+      if (ultimoRegistro[0].ordem > this.state.ordem) {
+        this.togglePlay()                
+          this.setState({
+              play: true
+          }) 
+      }
+
+      this.setState({
+        ordem: ultimoRegistro[0].ordem,
+        play:false
+      })
+
+    }
+  }
+
+  audio = new Audio(notify)
+
+  togglePlay = () => {
+      this.setState({ play: !this.state.play }, () => {
+        this.state.play ? this.audio.play() : this.audio.pause();
+      })
+  }
 
   render() {
 
@@ -48,26 +86,43 @@ export default class PainelSenha extends Component {
       return (item.status === "Rechamada" || item.status === "Chamada"  )
     })
     let ordem = filtro.sort(function(a, b){return  b.ordem - a.ordem})
-    console.log("Ordem",ordem)
-    let ultimas = ordem.slice(0,4)
-   console.log("Ultimas",ultimas)
+  
+    let ultimas = ordem.slice(1,4)
+    let ultima = ordem.slice(0,1)
+    
+
+    let mostrarUltima = 
+    <div className="list-group">
+     { ultima && ultima.map((senha, index) => (
+          <div className="primeira" 
+              key={index} > 
+            <div> SENHA {senha.sigla}{senha.numero} </div>
+            <div>  {senha.paciente} <span> - </span>  {senha.local} </div>
+            <div> <h1>{senha.guiche}</h1></div>                              
+          </div>
+      ))}
+      </div>
   
     let mostrarSenha = 
       <div className="list-group">
      { ultimas && ultimas.map((senha, index) => (
           <div className="painel" 
-              key={index} style={{display: 'flex', justifyContent: 'space-between'}}> 
-              SENHA {senha.numero} -
-              {senha.paciente} - 
-              {senha.local}  -
-              {senha.ordem}                                 
+              key={index} > 
+             <div> SENHA {senha.sigla}{senha.numero} </div>
+             <div>  {senha.paciente} <span> - </span>  {senha.local}  </div>
+             <div> <h1>{senha.guiche}</h1></div>                                                            
           </div>
       ))}
       </div>
      
   
     return (
-      <div>       
+      <div>   
+        <div className="topo">
+          <h1> Clínica Imagem</h1>
+          <img src={logo} alt="Belford Roxo" />
+        </div> 
+        {mostrarUltima}
         {mostrarSenha}     
       </div>
     )

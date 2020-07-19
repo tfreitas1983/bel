@@ -5,9 +5,11 @@ module.exports = mongoose => {
         paciente: String,
         tipo: String,
         local: String,
+        guiche: String,
         data_senha: Date,
         status: String,
         ordem: Number,
+        sigla: String,
         situacao: Boolean
     },
         { timestamps: true }
