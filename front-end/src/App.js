@@ -5,27 +5,28 @@ import './App.css'
 
 import AdicionarPaciente from "./components/add-paciente.component.js"
 import Paciente from "./components/edit-paciente.component"
-import PacientesLista from './components/list-paciente.component';
+import PacientesLista from './components/list-paciente.component'
 
-import AdicionarClinica from './components/add-clinica.component';
-import Clinica from './components/edit-clinica.component';
-import ClinicaLista from './components/list-clinica.component';
+import AdicionarClinica from './components/add-clinica.component'
+import Clinica from './components/edit-clinica.component'
+import ClinicaLista from './components/list-clinica.component'
 
-import AdicionarSala from './components/add-sala.component';
+import AdicionarSala from './components/add-sala.component'
 import Sala from "./components/edit-sala.component"
-import SalasLista from './components/list-sala.component';
+import SalasLista from './components/list-sala.component'
 
-import AdicionarGuiche from './components/add-guiche.component';
+import AdicionarGuiche from './components/add-guiche.component'
 import Guiche from "./components/edit-guiche.component"
-import GuichesLista from './components/list-guiche.component';
+import GuichesLista from './components/list-guiche.component'
 
 
-import AdicionarPainel from './components/add-painel.component';
+import AdicionarPainel from './components/add-painel.component'
 import Painel from "./components/edit-painel.component"
-import PainelLista from './components/list-painel.component';
+import PainelLista from './components/list-painel.component'
 
-import Cadastros from './components/cadastro.component';
+import Cadastros from './components/cadastro.component'
 import Senha from './components/senha.component';
+import Espera from './components/espera.component'
 
 
 
@@ -41,6 +42,12 @@ class App extends Component {
               <li className="nav-item">
                 <Link to={"/senhas"} className="nav-link">
                   Senhas
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to={"/espera"} className="nav-link">
+                  Espera
                 </Link>
               </li>
 
@@ -90,6 +97,7 @@ class App extends Component {
 
               <Route exact path="/cadastros" component={Cadastros} />
               <Route exact path="/senhas" component={Senha} />
+              <Route exact path="/espera" component={Espera} />
 
               <Route exact path="/cadastros/clinica" component={ClinicaLista} />
               <Route exact path="/cadastros/clinica/adicionar" component={AdicionarClinica} />
@@ -106,6 +114,7 @@ class App extends Component {
               <Route exact path="/cadastros/painel" component={PainelLista} />
               <Route exact path="/cadastros/painel/adicionar" component={AdicionarPainel} />
               <Route exact path="/cadastros/painel/:id" component={Painel} />
+
               
             </Switch>
           </div>

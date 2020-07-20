@@ -3,11 +3,11 @@ import SenhaDataService from '../services/senha.service'
 import notify from '../assets/notify.wav'
 import logo from '../assets/logo.png'
 
-export default class PainelSenha extends Component {
+export default class PainelExame extends Component {
   constructor(props) {
     super(props)
     this.pegaSenhas = this.pegaSenhas.bind(this)
-    this.ordem = this.ordem.bind(this)
+    this.esperaOrdem = this.esperaOrdem.bind(this)
     this.togglePlay = this.togglePlay.bind(this)
 
     this.state = {
@@ -18,7 +18,7 @@ export default class PainelSenha extends Component {
       local: "",
       paciente: "",
       play: false,
-      ordem: 0
+      esperaOrdem: 0
     } 
   }
 
@@ -27,7 +27,7 @@ export default class PainelSenha extends Component {
       () => this.pegaSenhas(),2000
     )
     this.timerID = setInterval(      
-      () => this.ordem(),500
+      () => this.esperaOrdem(),500
     )
   }
 
@@ -47,26 +47,24 @@ export default class PainelSenha extends Component {
     })
   }
 
-  ordem() {
+  esperaOrdem() {
 
     if (this.state.senhas.length > 0) {
-      const senhasOrdem = this.state.senhas.sort(function(a, b){return  b.ordem - a.ordem})
-      
-      const ultimoRegistro = senhasOrdem.slice(0,1)
-    
+        const senhasOrdem = this.state.senhas.sort(function(a, b){return  b.esperaOrdem - a.esperaOrdem})
+        
+        const ultimoRegistro = senhasOrdem.slice(0,1)
 
-      if (ultimoRegistro[0].ordem > this.state.ordem) {
-        this.togglePlay()                
-          this.setState({
-              play: true
-          }) 
-      }
 
-      this.setState({
-        ordem: ultimoRegistro[0].ordem,
-        play:false
-      })
-
+        if (ultimoRegistro[0].esperaOrdem > this.state.esperaOrdem) {
+            this.togglePlay()                
+            this.setState({
+                play: true
+            }) 
+            this.setState({
+                esperaOrdem: ultimoRegistro[0].esperaOrdem,
+                play: false
+            })
+        }
     }
   }
 
@@ -83,12 +81,12 @@ export default class PainelSenha extends Component {
     const { senhas } = this.state
 
     let filtro = (senhas).filter((item) => {
-      return (item.status === "Rechamada" || item.status === "Chamada"  )
+      return (item.status === "Rechamada Exame" || item.status === "Chamada Exame"  )
     })
-    let ordem = filtro.sort(function(a, b){return  b.ordem - a.ordem})
+    let esperaOrdem = filtro.sort(function(a, b){return  b.esperaOrdem - a.esperaOrdem})
   
-    let ultimas = ordem.slice(1,4)
-    let ultima = ordem.slice(0,1)
+    let ultimas = esperaOrdem.slice(1,4)
+    let ultima = esperaOrdem.slice(0,1)
     
 
     let mostrarUltima = 
@@ -98,7 +96,7 @@ export default class PainelSenha extends Component {
               key={index} > 
             <div> SENHA {senha.sigla}{senha.numero}  <span> - </span>
              {senha.paciente}  </div>
-            <div style={{display: 'flex', justifyContent: 'center'}}> <h1>RECEPÇÃO: {senha.guiche}</h1></div>                              
+            <div style={{display: 'flex', justifyContent: 'center'}}> <h1> {senha.local}</h1></div>                              
           </div>
       ))}
       </div>
@@ -110,7 +108,7 @@ export default class PainelSenha extends Component {
               key={index} > 
              <div> SENHA {senha.sigla}{senha.numero}  <span> - </span>
              {senha.paciente}  </div>
-            <div style={{display: 'flex', justifyContent: 'center'}}> <h1>RECEPÇÃO: {senha.guiche}</h1></div>                              
+            <div style={{display: 'flex', justifyContent: 'center'}}> <h1> {senha.local}</h1></div>                              
                                                                      
           </div>
       ))}
@@ -120,7 +118,7 @@ export default class PainelSenha extends Component {
     return (
       <div>   
         <div className="topo">
-          <h1> Clínica Imagem - Painel Recepção</h1>
+          <h1> Clínica Imagem - Painel Exames</h1>
           <img src={logo} alt="Belford Roxo" />
         </div> 
         {mostrarUltima}

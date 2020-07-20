@@ -9,6 +9,7 @@ module.exports = mongoose => {
         data_senha: Date,
         status: String,
         ordem: Number,
+        esperaOrdem: Number,
         sigla: String,
         situacao: Boolean
     },

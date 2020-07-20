@@ -40,6 +40,7 @@ export default class Senha extends Component {
         this.chamarSenha = this.chamarSenha.bind(this)
         this.rechamarSenha = this.rechamarSenha.bind(this)
         this.ultimaChamada = this.ultimaChamada.bind(this)
+        this.encaminharSenha = this.encaminharSenha.bind(this)
 
         this.state = {
             senhas:[],
@@ -385,9 +386,10 @@ export default class Senha extends Component {
             guiche: this.state.currentGuiche.guiche,     
             status: "Gerada",
             data_senha: new Date().toString(),
-            ordem: 0
+            ordem: 0,
+            esperaOrdem: 0
         }
-        console.log("Data", data)
+        
         
         SenhaDataService.cadastrar(data) 
         .then(response => {
@@ -401,6 +403,8 @@ export default class Senha extends Component {
                 sigla: response.data.sigla,    
                 guiche: response.data.guiche,         
                 status: response.data.status,
+                ordem: response.data.ordem,
+                esperaOrdem: response.data.esperaOrdem,
                 situacao: response.data.situacao,
                 submitted: true                
             })                        
@@ -434,6 +438,16 @@ export default class Senha extends Component {
     hideModalChamada = () => {
         this.setState({ 
             showModalChamada: false
+        })
+    }
+
+    showModalEncaminhar = () => {
+        this.setState({ showModalEncaminhar: true })
+    }   
+    
+    hideModalEncaminhar = () => {
+        this.setState({ 
+            showModalEncaminhar: false
         })
     }
 
@@ -487,41 +501,60 @@ export default class Senha extends Component {
     }
 
     chamarSenha() {
-       /* if (this.state.guiche === "") {
-            alert("Selecione seu guichê")            
-        }
-        */
-       
         if (this.state.currentSenha.status === "Gerada") {
-
             let filtroOrdem = (this.state.senhas).filter((item) => {
                 return item.ordem > 0
             })
 
             let soma = 1
-            let ultima = filtroOrdem.reduce((a,b) => {
-                if (b.ordem > a.ordem) a = b
-                return a
-            }) 
-           
-            var data = {
-                status: "Chamada",
-                ordem: ultima.ordem+soma
+
+            if(filtroOrdem.length === 0) {                
+                var data = {
+                    status: "Chamada",
+                    ordem: soma
+                }   
+                SenhaDataService.editar(this.state.currentSenha.id, data)
+                .then(response => {
+                    this.setState({
+                        showModalChamada: false,
+                        currentSenha: null,
+                        currentIndexSenha: -1
+                    })  
+                    this.pegaSenhas()  
+                            
+                })
+                .catch(e => {
+                    console.log(e)
+                })             
             }
 
-            SenhaDataService.editar(this.state.currentSenha.id, data)
-            .then(response => {
-                this.setState({
-                    showModalChamada: false,
-                    currentSenha: null,
-                    currentIndexSenha: -1
-                })  
-                this.pegaSenhas()  
-                           
-            })
-            .catch(e => {
-                console.log(e)
-            })
+            if(filtroOrdem.length > 0) {
+                let ultima = filtroOrdem.reduce((a,b) => {
+                    if (b.ordem > a.ordem) a = b
+                    return a
+                })                
+            
+                if(ultima.ordem > 0) {
+                    var data = {
+                        status: "Chamada",
+                        ordem: ultima.ordem+soma
+                    }
+                    SenhaDataService.editar(this.state.currentSenha.id, data)
+                    .then(response => {
+                        this.setState({
+                            showModalChamada: false,
+                            currentSenha: null,
+                            currentIndexSenha: -1
+                        })  
+                        this.pegaSenhas() 
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    }) 
+                }
+            }
+
+            
         }  
     }
 
@@ -541,6 +574,7 @@ export default class Senha extends Component {
                 status: "Rechamada",
                 ordem: ultima.ordem+soma
             }
+
             SenhaDataService.editar(this.state.currentSenha.id, data)
             .then(response => {
                 this.setState({
@@ -573,8 +607,6 @@ export default class Senha extends Component {
                 ordem: ultima.ordem+soma
             }
 
-            console.log("Data", data)
-
             SenhaDataService.editar(this.state.currentSenha.id, data)
             .then(response => {
                 this.setState({
@@ -583,14 +615,30 @@ export default class Senha extends Component {
                     currentIndexSenha: -1
                 })                   
                 this.pegaSenhas()
-                                 
             })
             .catch(e => {
                 console.log(e)
             })
+    }
+
+    encaminharSenha() {
+
+        var data = {
+            status: "Encaminhada"
+        }
+
+        SenhaDataService.editar(this.state.currentSenha.id, data)
+        .then(response => {
             this.setState({
-                play:false
-            } ) 
+                showModalChamada: false,
+                currentSenha: null,
+                currentIndexSenha: -1
+            })                   
+            this.pegaSenhas()
+        })
+        .catch(e => {
+            console.log(e)
+        })
     }
 
 
@@ -621,25 +669,30 @@ export default class Senha extends Component {
          ******************************************************************/
                 
         let mostrarSenha = null
-         
         
-        if (currentSenha === null || buscaSenha === '') {            
+        if (currentSenha === null || buscaSenha === '') {
+                      
             mostrarSenha = 
-            <div className="list-group">
-           { senhas && senhas.map((senha, index) => (
-                <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")} 
-                onClick={() => this.ativaSenha(senha, index)} 
-                key={index} style={{display: 'flex', justifyContent: 'space-between'}}> 
-                    SENHA {senha.sigla}{senha.numero} - {senha.paciente} - {senha.local}  - {senha.status}
-                    <div style={{backgroundColor: '#aaaf22', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
-                        Reimprimir
-                    </div> 
-                              
-                </div>
-            ))}
-            </div>
+            
+             senhas && senhas.map(function(senha, index) {
+               if (senha.status !== "Encaminhada") 
+                return <div className="list-group">
+                            <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")} 
+                                onClick={() => this.ativaSenha(senha, index)} 
+                                key={index} 
+                                style={{display: 'flex', justifyContent: 'space-between'}}> 
+                                    SENHA {senha.sigla}{senha.numero} - {senha.paciente} - {senha.local}  - {senha.status}
+                                    <div style={{backgroundColor: '#aaaf22', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={() =>this.showModalSenha}>
+                                        Reimprimir
+                                    </div>    
+                            </div> 
+                        </div>
+                
+            }.bind(this))
+            
         }
 
+        
         if (currentSenha !== null && currentSenha.status === "Gerada") {
             mostrarSenha =  <div className="autocomplete-items-active" >
                 
@@ -663,6 +716,9 @@ export default class Senha extends Component {
                 <div style={{backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
                     Chamar 2a vez
                 </div>
+                <div style={{backgroundColor: '#dd7322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalEncaminhar}>
+                    Encaminhar
+                </div>
             </div>
         }
 
@@ -675,6 +731,9 @@ export default class Senha extends Component {
                 </div>
                 <div style={{backgroundColor: '#ff7322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
                     Rechamar
+                </div>
+                <div style={{backgroundColor: '#dd7398', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalEncaminhar}>
+                    Encaminhar
                 </div>
             </div>
         }
@@ -901,6 +960,77 @@ export default class Senha extends Component {
                     }
         }
 
+
+        /*******************************************************************
+         * 
+         *                     MODAL DE ENCAMINHAR SENHAS
+         * 
+         *******************************************************************/
+
+        let modalEncaminhar = null
+
+        if(this.state.showModalEncaminhar === true) {
+        
+            if (currentSenha.status === "Chamada") {
+                modalEncaminhar = 
+                    <div className="modal_bg" onKeyUp={this.handleKeyPress}>
+                        <div className="modal" onKeyUp={this.handleKeyPress}>
+                            <div className="noprint">
+                                <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalChamada}>X</button>
+                            </div>
+                        <h2 style={{marginLeft: 15+'px'}}> Clínica Imagem</h2>
+                            
+                            <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
+                                {currentSenha.paciente}
+                            </label>
+                            
+                            <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
+                                {currentSenha.local}
+                            </label>
+                            
+                            <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
+                                Senha: {currentSenha.sigla}{currentSenha.numero}
+                            </label>  
+                            <div className="noprint">                                  
+                                <div>                            
+                                    <button onClick={this.encaminharSenha}>Encaminhar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            }
+            if (currentSenha.status === "Rechamada") {
+                modalEncaminhar = 
+                    <div className="modal_bg" onKeyUp={this.handleKeyPress}>
+                        <div className="modal" onKeyUp={this.handleKeyPress}>
+                            <div className="noprint">
+                                <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalChamada}>X</button>
+                            </div>
+                        <h2 style={{marginLeft: 15+'px'}}> Clínica Imagem</h2>
+                            
+                            <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
+                                {currentSenha.paciente}
+                            </label>
+                            
+                            <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
+                                {currentSenha.local}
+                            </label>
+                            
+                            <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
+                                Senha: {currentSenha.sigla}{currentSenha.numero}
+                            </label>  
+                            <div className="noprint">                                  
+                            <div>                            
+                                <button onClick={this.encaminharSenha}>Encaminhar</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        
+
+
                 
         /*******************************************************************
          * 
@@ -1034,7 +1164,7 @@ export default class Senha extends Component {
                         {autocompleteSenha}
                     </div>
                 </div>
-                {modal} {modalReimprimir} {modalChamada} {modalGuiche}
+                {modal} {modalReimprimir} {modalChamada} {modalGuiche} {modalEncaminhar}
             </div>
         )
     }

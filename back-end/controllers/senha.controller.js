@@ -17,6 +17,7 @@ exports.cadastrar = (req, res) => {
         sigla: req.body.sigla,
         status: req.body.status,
         ordem: req.body.ordem,
+        esperaOrdem: req.body.esperaOrdem,
         situacao: req.body.situacao ? req.body.situacao: true
     })
 
