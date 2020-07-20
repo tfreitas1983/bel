@@ -96,9 +96,9 @@ export default class PainelSenha extends Component {
      { ultima && ultima.map((senha, index) => (
           <div className="primeira" 
               key={index} > 
-            <div> SENHA {senha.sigla}{senha.numero} </div>
-            <div>  {senha.paciente} <span> - </span>  {senha.local} </div>
-            <div> <h1>{senha.guiche}</h1></div>                              
+            <div> SENHA {senha.sigla}{senha.numero}  <span> - </span>
+             {senha.paciente}  </div>
+            <div style={{display: 'flex', justifyContent: 'center'}}> <h1>RECEPÇÃO: {senha.guiche}</h1></div>                              
           </div>
       ))}
       </div>
@@ -108,9 +108,10 @@ export default class PainelSenha extends Component {
      { ultimas && ultimas.map((senha, index) => (
           <div className="painel" 
               key={index} > 
-             <div> SENHA {senha.sigla}{senha.numero} </div>
-             <div>  {senha.paciente} <span> - </span>  {senha.local}  </div>
-             <div> <h1>{senha.guiche}</h1></div>                                                            
+             <div> SENHA {senha.sigla}{senha.numero}  <span> - </span>
+             {senha.paciente}  </div>
+            <div style={{display: 'flex', justifyContent: 'center'}}> <h1>RECEPÇÃO: {senha.guiche}</h1></div>                              
+                                                                     
           </div>
       ))}
       </div>

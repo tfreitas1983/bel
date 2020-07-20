@@ -6,7 +6,7 @@ import SenhaDataService from '../services/senha.service'
 import GuicheDataService from '../services/guiche.service'
 import { Link } from "react-router-dom"
 import * as moment from 'moment'
-import notify from '../assets/notify.wav'
+
 
 
 export default class Senha extends Component {
@@ -49,6 +49,7 @@ export default class Senha extends Component {
             numero: "",
             tipo: "",
             local: "",
+            sigla: "",
             data_senha: "",
             status: "",
             salas: [],
@@ -65,7 +66,8 @@ export default class Senha extends Component {
             current: null,
             currentIndex: -1,
             selectedPage: null,
-            buscaNome: ""
+            buscaNome: "",
+            showModalGuiche: null
         }
     }
 
@@ -229,10 +231,10 @@ export default class Senha extends Component {
             })
     }
 
-    ativaSala(sala, index) {
+    ativaSala(sala, indexSala) {
         this.setState({
             currentSala: sala,
-            currentIndexSala: index
+            currentIndexSala: indexSala
         })
     }
 
@@ -243,25 +245,61 @@ export default class Senha extends Component {
         })
     }
 
-    ativaSenha(senha, index) {
+    ativaSenha(senha, indexSala) {
         this.setState({
             currentSenha: senha,
-            currentIndexSenha: index
+            currentIndexSenha: indexSala
         })
     }
 
-    estadoSelectSala (e) {
-        const selectedSala = e.target.value
-        this.setState(prevState => ({
-            currentSala: {
-                ...prevState.currentSala,
-                sala: selectedSala                
-            }
-        }))
+   estadoSelectSala (e) {
+        
+        const selectedSala = e.target.value        
+        this.setState({
+            sala: selectedSala
+        })
+
+        if (selectedSala === "Sala Raio-x") {
+            this.setState({
+                currentSala: {
+                    sigla: "RX",
+                    sala: selectedSala
+                }
+            })
+        }
+
+        if (selectedSala === "Sala Tomografia") {
+            this.setState({
+                currentSala: {
+                    sigla: "TC",
+                    sala: selectedSala
+                }
+            })
+        }
+
+        if (selectedSala === "Sala Densitometria") {
+            this.setState({
+                currentSala: {
+                    sigla: "DO",
+                    sala: selectedSala
+                }
+            })
+        }
+
+        if (selectedSala === "Recepção") {
+            this.setState({
+                currentSala: {
+                    sigla: "RCP",
+                    sala: selectedSala
+                }
+            })
+        }
+                 
+        
         this.setState({
             local: selectedSala
         })        
-    }
+    } 
 
     estadoSelectGuiche (e) {
         const selectedGuiche = e.target.value
@@ -344,7 +382,7 @@ export default class Senha extends Component {
             tipo: this.state.tipo,
             local: this.state.currentSala.sala,  
             sigla: this.state.currentSala.sigla, 
-            guiche: this.state.currentGuiche.descricao,     
+            guiche: this.state.currentGuiche.guiche,     
             status: "Gerada",
             data_senha: new Date().toString(),
             ordem: 0
@@ -435,20 +473,8 @@ export default class Senha extends Component {
 
     hideModalGuiche = () => {
         this.setState({ 
-            showModalGuiche: false,
-            currentSenha: null,
-            currentSala: null,
-            current: null,
-            currentGuiche: null,
-            currentIndexGuiche: -1,
-            selectedSala: "",
-            numero: "",
-            tipo: "",
-            buscaSenha: "", 
-            buscaNome: "",
-            currentIndexSenha: -1
-        }) 
-        this.limpaCurrentSenha()
+            showModalGuiche: false
+        })         
         this.pegaPacientes()      
         this.pegaSenhas()
     }
@@ -570,7 +596,9 @@ export default class Senha extends Component {
 
     render() {
         const { senhas, numero, local, buscaSenha, currentSenha, currentIndexSenha,
-            salas, guiches, buscaNome, pacientes, info, page, current, currentIndex } = this.state
+            salas, guiches, currentSala, currentIndexSala,
+            currentGuiche, currentIndexGuiche ,
+            buscaNome, pacientes, info, page, current, currentIndex } = this.state
 
         //Reinderiza os números das páginas de acordo com o total delas
         //Deixando selecionado a página corrente no array paginas
@@ -653,9 +681,9 @@ export default class Senha extends Component {
 
         /*******************************************************************
          * 
-         * Resultado da busca de pacientes
+         *              RESULTADO DE BUSCA DE PACIENTES
          * 
-         */
+         ******************************************************************/
 
         let mostrar = null
         if (current !== null) {
@@ -679,9 +707,9 @@ export default class Senha extends Component {
 
         /*******************************************************************
          * 
-         * Caixa de texto para busca de pacientes
+         *          CAIXA DE TEXTO PARA BUSCA DE PACIENTES
          * 
-         */
+         *******************************************************************/
        
         let autocomplete = null
         if (pacientes) {
@@ -715,31 +743,32 @@ export default class Senha extends Component {
         let modal = null
         if(this.state.showModal === true) {
             modal = 
-                <div className="modal_bg">
-                    <div className="modal" onKeyPress={this.handleKeyPress} >
-                        <div className="noprint">
-                            <button type="button" className="closeButton" id="closeButton" onClick={this.hideModal}>X</button>
-                        </div>
-                    <h2 style={{marginLeft: 15+'px'}}> Clínica Imagem</h2>
-                        
-                        <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
-                            {current.nome}
-                        </label>
-                       
-                        <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
-                            {local}
-                        </label>
-                        
-                        <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
-                            Senha: {currentSenha.sigla}{numero}
-                        </label>  
-                        <div className="noprint">                                  
-                            <button onClick={() => window.print()} className="btn btn-success">
-                                Imprimir
-                            </button>
-                        </div>
+                
+            <div className="modal_bg">
+                <div className="modal" onKeyPress={this.handleKeyPress} >                        
+                    <div className="noprint">
+                        <button type="button" className="closeButton" id="closeButton" onClick={this.hideModal}>X</button>
                     </div>
-                </div>
+                    <h2> Clínica Imagem</h2>
+                    
+                    <label style={{fontWeight: 'bold', fontSize:24+'px'}}>
+                        {current.nome}
+                    </label>
+                
+                    <label style={{fontWeight: 'bold', fontSize:24+'px'}}>
+                        {local}
+                    </label>
+                    <div style={{display: 'flex', margin:0, padding: 0}}>
+                        <label style={{fontWeight: 'bold', fontSize:36+'px'}}> Senha: </label> 
+                        <label style={{fontWeight: 'bold', fontSize:36+'px'}}>{this.state.currentSala.sigla}{numero}</label>
+                    </div>
+                    <div className="noprint">                                  
+                        <button onClick={() => window.print()} className="btn btn-success">
+                            Imprimir
+                        </button>
+                    </div>
+                </div> 
+            </div>
         }
 
         /*******************************************************************
@@ -911,12 +940,13 @@ export default class Senha extends Component {
         let modalGuiche = null
         
         if (this.state.showModalGuiche === true) {
+            modalGuiche =
             <div className="modal_bg" onKeyUp={this.handleKeyPress}>
                 <div className="modal" onKeyUp={this.handleKeyPress}>
                     <div className="noprint">
                         <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalGuiche}>X</button>
                     </div>
-                    <div className="actions">
+                    
                         <label style={{marginRight:10+'px'}}>Guichê</label>                                                
                         <select 
                             className="form-control" 
@@ -931,7 +961,10 @@ export default class Senha extends Component {
                                 </option>
                             ))}                             
                         </select>
-                    </div>
+                        <div>                            
+                            <button onClick={this.hideModalGuiche}>Fechar</button>
+                        </div>
+                   
                 </div>
             </div>
         }
@@ -988,8 +1021,8 @@ export default class Senha extends Component {
                                 value={this.state.local}              
                                 onChange={this.estadoSelectSala} >
                                 <option value="">---Selecione---</option>  
-                                {salas && salas.map((sala, index) => (
-                                    <option value={sala.descricao} key={index} onClick={() => this.ativaSala(sala, index)}>{sala.descricao}</option>
+                                {salas && salas.map((sala, indexSala) => (
+                                    <option value={sala.descricao} key={indexSala} onClick={() => this.ativaSala(sala, indexSala)} >{sala.descricao}</option>
                                 ))}                             
                             </select>
                             <div  >
@@ -997,9 +1030,7 @@ export default class Senha extends Component {
                                 Gerar Senha
                             </button>
                             </div>
-                                    
                         </div>
-                        
                         {autocompleteSenha}
                     </div>
                 </div>

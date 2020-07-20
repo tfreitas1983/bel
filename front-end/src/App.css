@@ -417,74 +417,42 @@ table, th, td {
   font-size: 18px;
 }
 @media print { 
-  .noprint  { display: none;}
-  body.modal-open {
-    visibility: hidden;
-    
-  }  
-
-  body.modal-open .modal .modal_bg .modal-body {
-      visibility: visible; /* make visible modal body and header */
-      position: absolute;
-      top: 0;
-      margin:0;
+  .noprint  { 
+    display: none;
   }
-}
-
-.birth-report{
-  margin-top: 60px;
-  background: #f9f9f9;  
-  padding: 10px;
-  width: 100%;
-}
 
 
-.birth-report-list {
-  margin-top: 0px;
-  width: 100%;
-  padding: 15px;
-  background: #f9f9f9;
+  body.modal-open .modal .modal_bg .modal-body .impressao {
+    visibility: visible; /* make visible modal body and header */
+    position: absolute;
+    top: 0;
+    margin:0;
+  }
+
 }
 
-.birth-report-list article {
-  background: #fcfcfc;
-  border: 1px solid #DDD;
-  border-radius: 5px;
-  padding:0px;
-  width: 100%;
-  margin: 0 10px 5px 0px;
-  display: table;  
-}
-
-.birth-report-list article img {
-  margin-left: 10px;
-}
-
-.birth-report-list article h4 {
-  margin-top: 60px;
-}
 
 .modal_bg {
-	position:fixed;
-	top:0;
-	left:0;
-	width:100%;
-	height:100%;
-	z-index:99;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:98;
   background-color:rgba(0, 0, 0, 0.6);
   overflow: visible!important;
-	
 }
+
 .modal {
   position: absolute;
   display: grid;
-	width:250px;
-	height: 300px;
-	background-color:#FFFFFF;
-	z-index:100;
-	top:10%;
+  width:500px;
+  height: 300px;
+  background-color:#FFFFFF;
+  z-index:100;
+  top:200px;
+  left: 450px;
   margin: 0;
-  overflow: visible!important;
 }
 
 .modal h2{
@@ -494,21 +462,21 @@ table, th, td {
 
 .modal button{
   padding: 0px;
-  margin: 0px 60px 10px;
+  margin: 0px 170px 10px;
+  width: 100px;
   border: 0;
   background-image: linear-gradient(to left,#257575, #50a3aa);
   color: #FFF;  
   cursor: pointer;
   height: 43px;
-
 }
 
 .modal button:hover {
   background: #276363;
   color: #FFF;
   cursor: pointer;
-
 }
+
 
 #closeButton {
   position: absolute;
