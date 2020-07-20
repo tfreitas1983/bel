@@ -12,6 +12,7 @@ export default class Espera extends Component {
         this.chamarSenha = this.chamarSenha.bind(this)
         this.rechamarSenha = this.rechamarSenha.bind(this)
         this.ultimaChamada = this.ultimaChamada.bind(this)
+        this.finalizar = this.finalizar.bind(this)
 
         this.state = {
             senhas:[],
@@ -123,7 +124,9 @@ export default class Espera extends Component {
     } 
 
     showModalChamada = () => {
-        this.setState({ showModalChamada: true })
+        this.setState({ 
+            showModalChamada: true 
+        })
     }   
     
     hideModalChamada = () => {
@@ -195,7 +198,7 @@ export default class Espera extends Component {
             }) 
 
             var data = {
-                status: "Rechamada",
+                status: "Rechamada Exame",
                 esperaOrdem: ultima.esperaOrdem+soma
             }
             SenhaDataService.editar(this.state.currentSenha.id, data)
@@ -205,8 +208,7 @@ export default class Espera extends Component {
                     currentSenha: null,
                     currentIndexSenha: -1
                 })                   
-                this.pegaSenhas() 
-                
+                this.pegaSenhas()
             })
             .catch(e => {
                 console.log(e)
@@ -230,7 +232,7 @@ export default class Espera extends Component {
                 esperaOrdem: ultima.esperaOrdem+soma
             }
 
-            console.log("Data", data)
+            
 
             SenhaDataService.editar(this.state.currentSenha.id, data)
             .then(response => {
@@ -250,6 +252,26 @@ export default class Espera extends Component {
             } ) 
     }
 
+    finalizar() {
+        var data = {
+            status: "Finalizada"
+        }
+
+        SenhaDataService.editar(this.state.currentSenha.id, data)
+        .then(response => {
+            this.setState({
+                showModalChamada: false,
+                currentSenha: null,
+                currentIndexSenha: -1
+            })                   
+            this.pegaSenhas()
+        })
+        .catch(e => {
+            console.log(e)
+        })
+
+    }
+
     render () {
         const { senhas, numero, local, buscaSenha, currentSenha, currentIndexSenha} = this.state
 
@@ -266,7 +288,7 @@ export default class Espera extends Component {
             mostrarSenha = 
             
            senhas && senhas.map(function(senha, index) {
-               if (senha.status === "Encaminhada") 
+               if (senha.status === "Encaminhada" || senha.status === "Chamada Exame" || senha.status === "Rechamada Exame") 
                 return <div className="list-group">
                     <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")} 
                         onClick={() => this.ativaSenha(senha, index)} 
@@ -293,8 +315,11 @@ export default class Espera extends Component {
                 
                 SENHA  {currentSenha.sigla}{currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
                 
-                <div style={{backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
+                <div style={{backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0, borderRadius: 5+'px'}} onClick={this.showModalChamada}>
                     Chamar 2a vez
+                </div>
+                <div style={{backgroundColor: '#237322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
+                    Finalizar
                 </div>
             </div>
         }
@@ -306,6 +331,9 @@ export default class Espera extends Component {
                 
                 <div style={{backgroundColor: '#ff7322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
                     Rechamar
+                </div>
+                <div style={{backgroundColor: '#237322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
+                    Finalizar
                 </div>
             </div>
         }
@@ -338,7 +366,7 @@ export default class Espera extends Component {
                         <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
                             Senha: {currentSenha.sigla}{currentSenha.numero}
                         </label>  
-                        <div className="noprint">                                  
+                        <div className="noprint">  
                         <div>                            
                             <button onClick={this.chamarSenha}>Chamar</button>
                         </div>
@@ -353,7 +381,7 @@ export default class Espera extends Component {
                             <div className="noprint">
                                 <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalChamada}>X</button>
                             </div>
-                        <h2 style={{marginLeft: 15+'px'}}> Clínica Imagem</h2>
+                            <h2 style={{marginLeft: 15+'px'}}> Clínica Imagem</h2>
                             
                             <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
                                 {currentSenha.paciente}
@@ -367,9 +395,12 @@ export default class Espera extends Component {
                                 Senha: {currentSenha.sigla}{currentSenha.numero}
                             </label>  
                             <div className="noprint">                                  
-                            <div>                            
-                                <button onClick={this.rechamarSenha}>Chamar 2a vez</button>
-                            </div>
+                                <div>                            
+                                    <button onClick={this.rechamarSenha} style={{width: 150+'px'}}>Chamar 2ª vez</button>
+                                </div>
+                                <div>                            
+                                    <button onClick={this.finalizar} style={{width: 150+'px', color: '#aa6666'}}>Finalizar</button>
+                                </div>                    
                             </div>
                         </div>
                     </div>
@@ -395,9 +426,12 @@ export default class Espera extends Component {
                                     Senha: {currentSenha.sigla}{currentSenha.numero}
                                 </label>  
                                 <div className="noprint">                                  
-                                <div>                            
-                                    <button onClick={this.ultimaChamada}>Rechamar</button>
-                                </div>
+                                    <div>                            
+                                        <button onClick={this.ultimaChamada}>Rechamar</button>
+                                    </div>
+                                    <div>                            
+                                        <button onClick={this.finalizar} style={{width: 150+'px', color: '#aa6666'}}>Finalizar</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -437,7 +471,7 @@ export default class Espera extends Component {
 
         return (
             <div className="col-md-6" style={{marginTop: 60+'px', width:1200+'px'}}>
-                <h1>Espera</h1>
+                <h1>Sala de Espera - Exames</h1>
                 {autocompleteSenha}
                 {modalChamada}
             </div>

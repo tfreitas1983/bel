@@ -630,7 +630,7 @@ export default class Senha extends Component {
         SenhaDataService.editar(this.state.currentSenha.id, data)
         .then(response => {
             this.setState({
-                showModalChamada: false,
+                showModalEncaminhar: false,
                 currentSenha: null,
                 currentIndexSenha: -1
             })                   
@@ -664,7 +664,7 @@ export default class Senha extends Component {
 
         /*******************************************************************
          * 
-         * Busca de senhas e senhas geradas
+         *                      SENHAS GERADAS
          * 
          ******************************************************************/
                 
@@ -675,7 +675,7 @@ export default class Senha extends Component {
             mostrarSenha = 
             
              senhas && senhas.map(function(senha, index) {
-               if (senha.status !== "Encaminhada") 
+               if (senha.status === "Gerada" || senha.status === "Chamada" || senha.status === "Rechamada" ) 
                 return <div className="list-group">
                             <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")} 
                                 onClick={() => this.ativaSenha(senha, index)} 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import SenhaDataService from '../services/senha.service'
-import notify from '../assets/notify.wav'
+import notify from '../assets/exame.wav'
 import logo from '../assets/logo.png'
 
 export default class PainelExame extends Component {
