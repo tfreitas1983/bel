@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PacienteDataService from "../services/paciente.service"
+import Webcam from "react-webcam"
 import * as moment from 'moment'
 
 export default class AdicionarPaciente extends Component {
@@ -43,6 +44,7 @@ export default class AdicionarPaciente extends Component {
             foto: "default.jpg",
             imagem: "",
             url:"",
+            showModal: false,
             submitted: false
         }
     }
@@ -241,6 +243,30 @@ export default class AdicionarPaciente extends Component {
         })
     }
 
+    showModal = () =>  {
+        this.setState({
+            showModal: true
+        })
+    }
+
+    hideModal = () => {
+        this.setState({
+            showModal: false
+        })
+    }
+
+    setRef = webcam => {
+        this.webcam = webcam;
+      }
+
+    capture = () => {
+        const imageSrc = this.webcam.getScreenshot();
+        this.setState({
+            imagem: imageSrc,
+           // url: URL.createObjectURL(imageSrc)
+        })
+    }
+
     render() {
 
 
@@ -261,7 +287,7 @@ export default class AdicionarPaciente extends Component {
         if(!this.state.url) {
             $imagePreview = <img alt="" src={images[this.state.foto]} />
         }
-
+/*
         //Verifica se a imagem possui mais de 2 MB
         if(this.state.imagem && (this.state.imagem.size > 2 * 1024 * 1024)){
             alert('Somente arquivos até 2MB')
@@ -270,6 +296,31 @@ export default class AdicionarPaciente extends Component {
         if(this.state.imagem && this.state.imagem.type.substr(0,6) !== "image/" && this.state.imagem.type !== "") {
             alert('Somente imagens podem ser enviadas')
         } 
+*/
+        const videoConstraints = {
+            width: 1280,
+            height: 720,
+            facingMode: "user"
+        }
+
+        let modalWebcam = null
+        if (this.state.showModal === true) {
+            modalWebcam = <div className="modal_bg">
+                <div className="modal">
+                    <button type="button" id="closeButton" onClick={this.hideModal}>X</button>
+                    <div>
+                        <h3>Foto do paciente</h3>
+                        <Webcam     
+                            className="camera"     
+                            audio={false}         
+                            ref={this.setRef}
+                            screenshotFormat="image/jpeg"          
+                            videoConstraints={videoConstraints} />
+                        <button id="capture" onClick={this.capture}>Capturar</button>
+                    </div>
+                </div>
+            </div>
+        }
     
 
         return (
@@ -286,7 +337,7 @@ export default class AdicionarPaciente extends Component {
                     <div className="col-5">
                         <div className="row">
                             <div className="form-group">
-                                <div className="image-container">
+                                <div className="image-container">                                    
                                     <div className="imagem">
                                         {$imagePreview}
                                     </div>
@@ -299,7 +350,10 @@ export default class AdicionarPaciente extends Component {
                                             id="file"
                                             name="file"
                                         /> 
+                                        <button type="button" onClick={this.showModal}>Webcam</button>
                                     </div>
+                                    {modalWebcam}
+                                    
                                 </div>
                             </div>
                         </div>
