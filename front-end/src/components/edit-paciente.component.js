@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PacienteDataService from "../services/paciente.service"
+import Webcam from "react-webcam"
 import * as moment from 'moment'
 
 export default class Paciente extends Component {
@@ -264,7 +265,9 @@ export default class Paciente extends Component {
         if(this.state.foto === "default.jpg" || !this.state.url) {
             this.atualizaPaciente()  
             return false
-        } if(this.state.foto !== "default.jpg") {
+        } 
+        
+        if(this.state.foto !== "default.jpg") {
         var data = new FormData()
         data.append('file', this.state.imagem)
                
@@ -273,7 +276,7 @@ export default class Paciente extends Component {
                             this.setState(prevState => ({
                                 current: {
                                     ...prevState.current,
-                                    foto: response.data.foto
+                                    foto: response.data.imagem
                                 }
                             }))
                             this.atualizaPaciente()
@@ -300,7 +303,7 @@ export default class Paciente extends Component {
             cidade: this.state.current.cidade,
             uf: this.state.current.uf,
             cep: this.state.current.cep,
-            foto: this.state.current.foto,
+            foto: this.state.current.imagem,
             situacao: status
         }
 
@@ -335,7 +338,7 @@ export default class Paciente extends Component {
             cidade: this.state.current.cidade,
             uf: this.state.current.uf,
             cep: this.state.current.cep,
-            foto: this.state.current.foto
+            foto: this.state.current.imagem
         }
 
         PacienteDataService.editar( this.state.current.id, data )
@@ -349,11 +352,64 @@ export default class Paciente extends Component {
                 console.log(e)
             })
     }    
+
+    showModal = () => {
+        this.setState({
+            showModal: true
+        })
+    }
+
+    hideModal = () => {
+        this.setState({
+            showModal: false
+        })
+    }
+
+    setRef = webcam => {
+        this.webcam = webcam;
+    }
+
+    capture = () => {
+        const imageSrc = this.webcam.getScreenshot();
+        
+        this.setState(prevState => ({
+            current: {
+                ...prevState.current,
+                foto: imageSrc,
+                imagem: imageSrc
+            }  
+        }))
+        this.hideModal()
+    }
    
 
     render() {
         const { current } = this.state
 
+        const videoConstraints = {
+            width: 1280,
+            height: 720,
+            facingMode: "user"
+        }
+
+        let modalWebcam = null
+        if (this.state.showModal === true) {
+            modalWebcam = <div className="modal_bg">
+                <div className="modal">
+                    <button type="button" id="closeButton" onClick={this.hideModal}>X</button>
+                    <div>
+                        <h3>Foto do paciente</h3>
+                        <Webcam     
+                            className="camera"     
+                            audio={false}         
+                            ref={this.setRef}
+                            screenshotFormat="image/jpeg"          
+                            videoConstraints={videoConstraints} />
+                        <button id="capture" onClick={this.capture}>Capturar</button>
+                    </div>
+                </div>
+            </div>
+        }
 
         //Monta um array com os nomes dos arquivos da pasta imagens
         const importAll = require =>
@@ -370,19 +426,12 @@ export default class Paciente extends Component {
         let $imagePreview = null
         if (this.state.url && current.foto !== "default.jpg") {
             $imagePreview = <img alt="" src={this.state.url} />
-        } if((current.foto.length > 30 || current.foto === "default.jpg") && !this.state.url) {
-            $imagePreview = <img alt="" src={images[current.foto]} />
+        } 
+        
+        if((current.foto.length > 30 || current.foto === "default.jpg") && !this.state.url) {
+            $imagePreview = <img alt="" src={current.foto} />
         }
 
-        //Verifica se a imagem possui mais de 2 MB
-        if(this.state.imagem && (this.state.imagem.size > 2 * 1024 * 1024)){
-            alert('Somente arquivos até 2MB')
-        }
-        //Verifica se é uma imagem
-        if(this.state.imagem && this.state.imagem.type.substr(0,6) !== "image/" && this.state.imagem.type !== "") {
-            alert('Somente imagens podem ser enviadas')
-        } 
-      
         
         return (
         <div>
@@ -398,12 +447,10 @@ export default class Paciente extends Component {
                             </div>
                             
                             <div className="envio">
-                                <input 
-                                    type="file" 
-                                    accept="image/*" 
-                                    className="upload-btn"
-                                    onChange={this.estadoUpload} 
-                                /> 
+                            <div className="envio">
+                                        <button type="button" onClick={this.showModal}>Webcam</button>
+                                    </div>
+                                    {modalWebcam}
                             </div>
 
                         </div>

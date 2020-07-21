@@ -25,6 +25,8 @@ export default class AdicionarPaciente extends Component {
         this.salvarPaciente = this.salvarPaciente.bind(this)
         this.novoPaciente = this.novoPaciente.bind(this)
 
+        this.capture = this.capture.bind(this)
+
         this.state = {
             id: null,
             nome: "",
@@ -155,7 +157,8 @@ export default class AdicionarPaciente extends Component {
         if(this.state.foto === "default.jpg") {
             this.salvarPaciente()  
             return false
-        } if(this.state.foto !== "default.jpg") {
+        }
+        if(this.state.foto !== "default.jpg") {
         
             var data = new FormData()
             data.append('file', this.state.imagem)
@@ -190,7 +193,7 @@ export default class AdicionarPaciente extends Component {
             cidade: this.state.cidade,
             uf: this.state.uf,
             cep: this.state.cep,
-            foto: this.state.foto
+            foto: this.state.imagem
         }
 
             PacienteDataService.cadastrar(data)
@@ -243,7 +246,7 @@ export default class AdicionarPaciente extends Component {
         })
     }
 
-    showModal = () =>  {
+    showModal = () => {
         this.setState({
             showModal: true
         })
@@ -257,46 +260,17 @@ export default class AdicionarPaciente extends Component {
 
     setRef = webcam => {
         this.webcam = webcam;
-      }
+    }
 
     capture = () => {
         const imageSrc = this.webcam.getScreenshot();
         this.setState({
-            imagem: imageSrc,
-           // url: URL.createObjectURL(imageSrc)
+            imagem: imageSrc
         })
+        this.hideModal()
     }
-
     render() {
-
-
-        //Monta um array com o nome dos arquivos
-        const importAll = require =>
-          require.keys().reduce((acc, next) => {
-            acc[next.replace("./", "")] = require(next);
-            return acc;
-          }, {});
-        //No array somente aceita as extensões de imagens
-        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpeg|jpg|svg|JPG|PNG|GIF|TIFF|JPEG|SVG)$/))
         
-        //Modifica o <img src=""> no JSX caso seja o preview da imagem ou a imagem da pasta
-        let $imagePreview = null;
-        if (this.state.url) {
-            $imagePreview = <img alt="" src={this.state.url} />
-        }
-        if(!this.state.url) {
-            $imagePreview = <img alt="" src={images[this.state.foto]} />
-        }
-/*
-        //Verifica se a imagem possui mais de 2 MB
-        if(this.state.imagem && (this.state.imagem.size > 2 * 1024 * 1024)){
-            alert('Somente arquivos até 2MB')
-        }
-        //Verifica se é uma imagem
-        if(this.state.imagem && this.state.imagem.type.substr(0,6) !== "image/" && this.state.imagem.type !== "") {
-            alert('Somente imagens podem ser enviadas')
-        } 
-*/
         const videoConstraints = {
             width: 1280,
             height: 720,
@@ -321,6 +295,38 @@ export default class AdicionarPaciente extends Component {
                 </div>
             </div>
         }
+
+        //Monta um array com o nome dos arquivos
+        const importAll = require =>
+          require.keys().reduce((acc, next) => {
+            acc[next.replace("./", "")] = require(next);
+            return acc;
+          }, {});
+        //No array somente aceita as extensões de imagens
+        const images = importAll(require.context('../images', false, /\.(png|gif|tiff|jpeg|jpg|svg|JPG|PNG|GIF|TIFF|JPEG|SVG)$/))
+        
+        //Modifica o <img src=""> no JSX caso seja o preview da imagem ou a imagem da pasta
+        let $imagePreview = null;
+        if (this.state.url) {
+            $imagePreview = <img alt="" src={this.state.url} />
+        }
+        if(!this.state.url) {
+            $imagePreview = <img alt="" src={images[this.state.foto]} />
+        }
+
+        if (this.state.imagem) {
+            $imagePreview = <img alt="" src={this.state.imagem} />
+        }
+/*
+        //Verifica se a imagem possui mais de 2 MB
+        if(this.state.imagem && (this.state.imagem.size > 2 * 1024 * 1024)){
+            alert('Somente arquivos até 2MB')
+        }
+        //Verifica se é uma imagem
+        if(this.state.imagem && this.state.imagem.type.substr(0,6) !== "image/" && this.state.imagem.type !== "") {
+            alert('Somente imagens podem ser enviadas')
+        } 
+*/
     
 
         return (
@@ -342,14 +348,6 @@ export default class AdicionarPaciente extends Component {
                                         {$imagePreview}
                                     </div>
                                     <div className="envio">
-                                        <input 
-                                            type="file" 
-                                            accept="image/*" 
-                                            className="file"
-                                            onChange={this.estadoUpload}
-                                            id="file"
-                                            name="file"
-                                        /> 
                                         <button type="button" onClick={this.showModal}>Webcam</button>
                                     </div>
                                     {modalWebcam}

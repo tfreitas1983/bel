@@ -270,7 +270,7 @@ export default class PacientesLista extends Component {
                         <div className="col-md-5">
                             <div className="imagem">
                                 <img 
-                                    src={images[current.foto]}
+                                    src={current.foto}
                                     className="imagem"
                                     alt=""
                                     name="foto" 
