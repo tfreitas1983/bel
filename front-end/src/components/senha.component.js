@@ -773,7 +773,7 @@ export default class Senha extends Component {
         let autocomplete = null
         if (pacientes) {
             autocomplete = 
-            <div>
+            <div style={{width: 100+'%'}}>
                 <div className="actions">
                     <div className="autocomplete">
                         <input 
@@ -804,11 +804,11 @@ export default class Senha extends Component {
             modal = 
                 
             <div className="modal_bg">
-                <div className="modal" onKeyPress={this.handleKeyPress} >                        
+                <div className="impressao" onKeyPress={this.handleKeyPress} >                        
                     <div className="noprint">
                         <button type="button" className="closeButton" id="closeButton" onClick={this.hideModal}>X</button>
                     </div>
-                    <h2> Clínica Imagem</h2>
+                    <h2 style={{marginLeft: 40+'px'}}> Clínica Imagem</h2>
                     
                     <label style={{fontWeight: 'bold', fontSize:24+'px'}}>
                         {current.nome}
@@ -819,12 +819,18 @@ export default class Senha extends Component {
                     </label>
                     <div style={{display: 'flex', margin:0, padding: 0}}>
                         <label style={{fontWeight: 'bold', fontSize:36+'px'}}> Senha: </label> 
-                        <label style={{fontWeight: 'bold', fontSize:36+'px'}}>{this.state.currentSala.sigla}{numero}</label>
+                        <label style={{fontWeight: 'bold', fontSize:36+'px'}}>{" "}{this.state.currentSala.sigla}{numero}</label>
                     </div>
-                    <div className="noprint">                                  
-                        <button onClick={() => window.print()} className="btn btn-success">
+                    <div className="noprint">
+                    <div className="actions">                                  
+                        <button onClick={() => window.print()} style={{marginLeft: 180+'px'}} className="btn btn-success">
                             Imprimir
                         </button>
+                        <button type="button" onClick={this.hideModal}>
+                            Fechar
+                        </button>
+                        
+                    </div>
                     </div>
                 </div> 
             </div>
@@ -840,7 +846,7 @@ export default class Senha extends Component {
         if(this.state.showModalSenha === true) {
             modalReimprimir = 
                 <div className="modal_bg" onKeyUp={this.handleKeyPress}>
-                    <div className="modal" onKeyUp={this.handleKeyPress}>
+                    <div className="impressao" onKeyUp={this.handleKeyPress}>
                         <div className="noprint">
                             <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalSenha}>X</button>
                         </div>
@@ -1073,11 +1079,9 @@ export default class Senha extends Component {
             modalGuiche =
             <div className="modal_bg" onKeyUp={this.handleKeyPress}>
                 <div className="modal" onKeyUp={this.handleKeyPress}>
-                    <div className="noprint">
-                        <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalGuiche}>X</button>
-                    </div>
                     
-                        <label style={{marginRight:10+'px'}}>Guichê</label>                                                
+                    
+                        <h1 style={{marginLeft:160+'px'}}>Guichê</h1>                                                
                         <select 
                             className="form-control" 
                             id="guiche" 
