@@ -766,7 +766,7 @@ export default class Senha extends Component {
         } 
         if (current === null || buscaNome === '') {            
             mostrar = 
-            <div className="list-group">
+            <div className="list-group" style={{width:92+'%'}}>
            { pacientes && pacientes.map((paciente, index) => (
                 <div className={"autocomplete-items" + (index === currentIndex ? "-active" : "")} 
                 onClick={() => this.ativaPaciente(paciente, index)} 
@@ -1173,7 +1173,7 @@ export default class Senha extends Component {
                                     <option value={sala.descricao} key={indexSala} onClick={() => this.ativaSala(sala, indexSala)} >{sala.descricao}</option>
                                 ))}                             
                             </select>
-                            <div  >
+                            <div>
                             <button type="button" style={{width:10+'em', height: 3+'em',marginLeft: 10+'px', padding: 15+'px'}} onClick={this.gerarSenha}>
                                 Gerar Senha
                             </button>

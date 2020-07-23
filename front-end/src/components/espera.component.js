@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import SenhaDataService from '../services/senha.service'
+import SalaDataService from '../services/sala.service'
 
 export default class Espera extends Component {
     constructor(props) {
@@ -8,6 +9,10 @@ export default class Espera extends Component {
         this.pegaSenhas = this.pegaSenhas.bind(this)
         this.buscaSenha = this.buscaSenha.bind(this)
         this.estadoBuscaSenha = this.estadoBuscaSenha.bind(this)
+
+        this.pegaSalas = this.pegaSalas.bind(this)
+        this.estadoSelectSala = this.estadoSelectSala.bind(this)
+        this.ativaSala = this.ativaSala.bind(this)
 
         this.chamarSenha = this.chamarSenha.bind(this)
         this.rechamarSenha = this.rechamarSenha.bind(this)
@@ -19,7 +24,11 @@ export default class Espera extends Component {
             buscaSenha: "",
             currentSenha: null,
             currentIndexSenha: -1,
+            salas:[],
+            currentSala: null,
+            currentIndexSala: -1,
             numero: "",
+            sala: "",
             tipo: "",
             local: "",
             sigla: "",
@@ -30,6 +39,7 @@ export default class Espera extends Component {
 
     componentDidMount() {
         this.pegaSenhas()
+        this.pegaSalas()
     }
 
     pegaSenhas() {        
@@ -37,6 +47,18 @@ export default class Espera extends Component {
         .then(response => {
             this.setState({
                 senhas: response.data.docs
+            })            
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
+
+    pegaSalas() {        
+        SalaDataService.buscarTodos()
+        .then(response => {
+            this.setState({
+                salas: response.data
             })            
         })
         .catch(e => {
@@ -76,7 +98,14 @@ export default class Espera extends Component {
         })
     }
 
-   estadoSelectSala (e) {
+    ativaSala(sala, indexSala) {
+        this.setState({
+            currentSala: sala,
+            currentIndexSala: indexSala
+        })
+    }
+
+   estadoSelectSala(e) {
         const selectedSala = e.target.value        
         this.setState({
             sala: selectedSala
@@ -273,7 +302,7 @@ export default class Espera extends Component {
     }
 
     render () {
-        const { senhas, numero, local, buscaSenha, currentSenha, currentIndexSenha} = this.state
+        const { senhas, numero, local, buscaSenha, currentSenha, currentIndexSenha, salas, currentIndexSala} = this.state
 
        
         /*******************************************************************
@@ -473,6 +502,17 @@ export default class Espera extends Component {
             <div className="col-md-6" style={{marginTop: 60+'px', width:1200+'px'}}>
                 <h1>Sala de Espera - Exames</h1>
                 {autocompleteSenha}
+                <select 
+                    className="form-control" 
+                    id="sala" 
+                    name="sala"      
+                    value={this.state.local}              
+                    onChange={this.estadoSelectSala} >
+                    <option value="">---Selecione---</option>  
+                    {salas && salas.map((sala, indexSala) => (
+                        <option value={sala.descricao} key={indexSala} onClick={() => this.ativaSala(sala, indexSala)} >{sala.descricao}</option>
+                    ))}                             
+                </select>
                 {modalChamada}
             </div>
         )
