@@ -44,6 +44,7 @@ module.exports = app => {
     router.get("/senhas", senhas.buscarTodos)
     router.get("/senhas/:id", senhas.buscarUm)
     router.put("/senhas/:id", senhas.editar)
+    router.delete("/senhas", senhas.apagarTodos)
 
     router.post("/painel", painel.cadastrar)
     router.get("/painel", painel.buscarTodos)

@@ -9,6 +9,7 @@ import * as moment from 'moment'
 
 
 
+
 export default class Senha extends Component {
     constructor(props) {
         super(props)
@@ -20,6 +21,7 @@ export default class Senha extends Component {
         this.pegaSenhas = this.pegaSenhas.bind(this)
         this.buscaSenha = this.buscaSenha.bind(this)
         this.estadoBuscaSenha = this.estadoBuscaSenha.bind(this)
+        this.apagar = this.apagar.bind(this)
 
         this.pegaGuiches = this.pegaGuiches.bind(this)
         this.ativaGuiche = this.ativaGuiche.bind(this)        
@@ -641,6 +643,17 @@ export default class Senha extends Component {
         })
     }
 
+    apagar() {
+        SenhaDataService.apagarTodos()
+            .then(response => {
+                console.log(response.data)
+                this.pegaSenhas()
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    }
+
 
     render() {
         const { senhas, numero, local, buscaSenha, currentSenha, currentIndexSenha,
@@ -1110,7 +1123,7 @@ export default class Senha extends Component {
                     <div className="actions">
                         <h1>Senhas</h1> 
                        
-                        <div className="actions">
+                        <div className="actions">                           
                             <label style={{marginRight:10+'px'}}>Guichê</label>                                                
                             <select 
                                 className="form-control" 
@@ -1130,7 +1143,7 @@ export default class Senha extends Component {
 
                     <div className="col-md-6">
                         <div className="adicionar">                  
-                            <Link to={"/pacientes/adicionar"}>Novo Paciente</Link>
+                            <Link to={"/pacientes/adicionar"}>Novo Paciente</Link>                            
                         </div>                    
                         {autocomplete}
                         <div className="actions">
@@ -1144,6 +1157,7 @@ export default class Senha extends Component {
                                 Próxima
                             </button>
                         </div>
+                        <button type="button" className="btn btn-danger" onClick={this.apagar}>Apagar Anteriores</button>
                     </div>
                     <div className="col-md-5">
                         <label>Sala</label>

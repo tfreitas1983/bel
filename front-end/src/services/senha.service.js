@@ -20,6 +20,10 @@ class SenhaDataService {
     buscarSenha(paciente, page) {
         return http.get(`/senhas?paciente=${paciente}&page=${page}`)
     } 
+
+    apagarTodos() {
+        return http.delete(`/senhas`)
+    }
 }
 
 export default new SenhaDataService()

@@ -119,10 +119,14 @@ exports.apagar = (req, res) => {
 }
 
 exports.apagarTodos = (req, res) => {
-    Senha.deleteMany({})
+    var data_anterior = new Date()
+    data_anterior.setDate(data_anterior.getDate() - 1)
+
+
+    Senha.deleteMany({"data_senha": {$lte: data_anterior} })
         .then(data => {
             res.send({
-                message: `${data.deletedCount} senhas foram deletadas com sucesso`
+                message: `${data.deletedCountDocuments} senhas foram deletadas com sucesso`
             })
         })
         .catch(err => {
