@@ -312,11 +312,8 @@ export default class Espera extends Component {
          ******************************************************************/
 
         let mostrarSenha = null
-        
         if (currentSenha === null || buscaSenha === '') {            
-            mostrarSenha = 
-            
-           senhas && senhas.map(function(senha, index) {
+            mostrarSenha = senhas && senhas.map(function(senha, index) {
                if (senha.status === "Encaminhada" || senha.status === "Chamada Exame" || senha.status === "Rechamada Exame") 
                 return <div className="list-group">
                     <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")} 
@@ -328,17 +325,64 @@ export default class Espera extends Component {
             }.bind(this))
         }
 
-        if (currentSenha !== null && currentSenha.status === "Encaminhada") {
-            mostrarSenha =  <div className="autocomplete-items-active" >
-                
-        SENHA  {currentSenha.sigla}{currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
-                
-                <div style={{backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
-                    Chamar
+        let filtro = null
+        if (local === "Sala Raio-x") {                                 
+            filtro = senhas.filter((item) => {
+                return item.local === "Sala Raio-x" && (item.status === "Encaminhada" || item.status === "Chamada Exame" || item.status === "Rechamada Exame") 
+            })                    
+            mostrarSenha = filtro.map(function(senha, index) {
+                return <div className="list-group">
+                    <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")}
+                        onClick={() => this.ativaSenha(senha, index)}
+                        key={index} 
+                        style={{display: 'flex', justifyContent: 'space-between'}}> 
+                        SENHA {senha.sigla}{senha.numero} - {senha.paciente} - {senha.local}  - {senha.status}
+                    </div>
+                    <div style={{display: 'flex',justifyContent: 'center',backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
+                        Chamar
+                    </div>
                 </div>
-            </div>
+            }.bind(this))
         }
 
+        if (local === "Sala Tomografia") {                                 
+            filtro = senhas.filter((item) => {
+                return item.local === "Sala Tomografia" && (item.status === "Encaminhada" || item.status === "Chamada Exame" || item.status === "Rechamada Exame") 
+            })                    
+            mostrarSenha = filtro.map(function(senha, index) {
+                return <div className="list-group">
+                    <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")}
+                        onClick={() => this.ativaSenha(senha, index)}
+                        key={index} 
+                        style={{display: 'flex', justifyContent: 'space-between'}}> 
+                        SENHA {senha.sigla}{senha.numero} - {senha.paciente} - {senha.local}  - {senha.status}
+                    </div>
+                    <div style={{display: 'flex',justifyContent: 'center',backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
+                        Chamar
+                    </div>
+                </div>
+            }.bind(this))
+        }
+
+        if (local === "Sala Densitometria") {                                 
+            filtro = senhas.filter((item) => {
+                return item.local === "Sala Densitometria" && (item.status === "Encaminhada" || item.status === "Chamada Exame" || item.status === "Rechamada Exame") 
+            })                    
+            mostrarSenha = filtro.map(function(senha, index) {
+                return <div className="list-group">
+                    <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")}
+                        onClick={() => this.ativaSenha(senha, index)}
+                        key={index} 
+                        style={{display: 'flex', justifyContent: 'space-between'}}> 
+                        SENHA {senha.sigla}{senha.numero} - {senha.paciente} - {senha.local}  - {senha.status}
+                    </div>
+                    <div style={{display: 'flex',justifyContent: 'center', backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
+                        Chamar
+                    </div>
+                </div>
+            }.bind(this))
+        }
+        /*
         if (currentSenha !== null && currentSenha.status === "Chamada Exame") {
             mostrarSenha =  <div className="autocomplete-items-active" >
                 
@@ -366,6 +410,7 @@ export default class Espera extends Component {
                 </div>
             </div>
         }
+        */
 
         /*******************************************************************
          * 
@@ -492,16 +537,7 @@ export default class Espera extends Component {
                         onChange={this.estadoBuscaSenha}
                         autoComplete="off" /> 
                     </div>                                       
-                </div>                                   
-                    {mostrarSenha}                                    
-            </div>
-        }  
-
-
-        return (
-            <div className="col-md-6" style={{marginTop: 60+'px', width:1200+'px'}}>
-                <h1>Sala de Espera - Exames</h1>
-                {autocompleteSenha}
+                </div>      
                 <select 
                     className="form-control" 
                     id="sala" 
@@ -512,7 +548,17 @@ export default class Espera extends Component {
                     {salas && salas.map((sala, indexSala) => (
                         <option value={sala.descricao} key={indexSala} onClick={() => this.ativaSala(sala, indexSala)} >{sala.descricao}</option>
                     ))}                             
-                </select>
+                </select>                             
+                {mostrarSenha}                                    
+            </div>
+        }  
+
+
+        return (
+            <div className="col-md-6" style={{marginTop: 60+'px', width:1200+'px'}}>
+                <h1>Sala de Espera - Exames</h1>
+                {autocompleteSenha}
+                
                 {modalChamada}
             </div>
         )
