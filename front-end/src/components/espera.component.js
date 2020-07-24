@@ -160,7 +160,12 @@ export default class Espera extends Component {
     
     hideModalChamada = () => {
         this.setState({ 
-            showModalChamada: false
+            showModalChamada: false,
+            sala: "",
+            currentSala: null,
+            currentSenha: null,
+            currentIndexSenha: -1,
+            currentIndexSala: -1
         })
     }
 
@@ -312,7 +317,8 @@ export default class Espera extends Component {
          ******************************************************************/
 
         let mostrarSenha = null
-        if (currentSenha === null || buscaSenha === '') {            
+
+        if (currentSenha && currentSenha !== null) {            
             mostrarSenha = senhas && senhas.map(function(senha, index) {
                if (senha.status === "Encaminhada" || senha.status === "Chamada Exame" || senha.status === "Rechamada Exame") 
                 return <div className="list-group">
@@ -321,9 +327,40 @@ export default class Espera extends Component {
                         key={index} style={{display: 'flex', justifyContent: 'space-between'}}> 
                     SENHA {senha.sigla}{senha.numero} - {senha.paciente} - {senha.local}  - {senha.status}
                     </div>
+                    <div style={{display: 'flex',justifyContent: 'center',backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
+                        Chamar
+                    </div>
                 </div>
             }.bind(this))
         }
+
+
+        if (currentSenha === null && buscaSenha === '') {            
+            mostrarSenha = senhas && senhas.map(function(senha, index) {
+               if (senha.status === "Encaminhada" || senha.status === "Chamada Exame" || senha.status === "Rechamada Exame") 
+                return <div className="list-group">
+                    <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")} 
+                        onClick={() => this.ativaSenha(senha, index)} 
+                        key={index} style={{display: 'flex', justifyContent: 'space-between'}}> 
+                    SENHA {senha.sigla}{senha.numero} - {senha.paciente} - {senha.local}  - {senha.status}
+                    </div>                    
+                </div>
+            }.bind(this))
+        }
+
+        if (currentSenha === null && buscaSenha !== '') {            
+            mostrarSenha = senhas && senhas.map(function(senha, index) {
+               if (senha.status === "Encaminhada" || senha.status === "Chamada Exame" || senha.status === "Rechamada Exame") 
+                return <div className="list-group">
+                    <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")} 
+                        onClick={() => this.ativaSenha(senha, index)} 
+                        key={index} style={{display: 'flex', justifyContent: 'space-between'}}> 
+                    SENHA {senha.sigla}{senha.numero} - {senha.paciente} - {senha.local}  - {senha.status}
+                    </div>                    
+                </div>
+            }.bind(this))
+        }
+
 
         let filtro = null
         if (local === "Sala Raio-x") {                                 
@@ -384,10 +421,7 @@ export default class Espera extends Component {
         }
         /*
         if (currentSenha !== null && currentSenha.status === "Chamada Exame") {
-            mostrarSenha =  <div className="autocomplete-items-active" >
-                
-                SENHA  {currentSenha.sigla}{currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
-                
+            mostrarBotao =  <div className="autocomplete-items-active" >
                 <div style={{backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0, borderRadius: 5+'px'}} onClick={this.showModalChamada}>
                     Chamar 2a vez
                 </div>
@@ -398,10 +432,9 @@ export default class Espera extends Component {
         }
 
         if (currentSenha !== null && currentSenha.status === "Rechamada Exame") {
-            mostrarSenha =  <div className="autocomplete-items-active" >
+            mostrarBotao =  <div className="autocomplete-items-active" >
                 
-                SENHA  {currentSenha.sigla}{currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
-                
+                              
                 <div style={{backgroundColor: '#ff7322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
                     Rechamar
                 </div>
@@ -473,7 +506,7 @@ export default class Espera extends Component {
                                     <button onClick={this.rechamarSenha} style={{width: 150+'px'}}>Chamar 2ª vez</button>
                                 </div>
                                 <div>                            
-                                    <button onClick={this.finalizar} style={{width: 150+'px', color: '#aa6666'}}>Finalizar</button>
+                                    <button onClick={this.finalizar} style={{width: 150+'px', color: '#f2f2f2'}}>Finalizar</button>
                                 </div>                    
                             </div>
                         </div>
@@ -504,7 +537,7 @@ export default class Espera extends Component {
                                         <button onClick={this.ultimaChamada}>Rechamar</button>
                                     </div>
                                     <div>                            
-                                        <button onClick={this.finalizar} style={{width: 150+'px', color: '#aa6666'}}>Finalizar</button>
+                                        <button onClick={this.finalizar} style={{width: 150+'px', color: '#f2f2f2'}}>Finalizar</button>
                                     </div>
                                 </div>
                             </div>

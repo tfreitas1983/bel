@@ -37,10 +37,10 @@ export default class PainelExame extends Component {
   }
 
   ler(sigla, senha, local) {
-    this.speaker = new SpeechSynthesisUtterance();
-    this.speaker.lang = 'pt-BR';
-    this.speaker.text = 'Senha' + sigla + senha + local;
-    speechSynthesis.speak(this.speaker)
+    this.speaker = new SpeechSynthesisUtterance()
+    this.speaker.lang = 'pt-BR'
+    this.speaker.text = 'Senha' + sigla + senha + local
+    speechSynthesis.speak(this.speaker)     
   }
 
   pegaSenhas() {        
@@ -61,13 +61,13 @@ export default class PainelExame extends Component {
         const senhasOrdem = this.state.senhas.sort(function(a, b){return  b.esperaOrdem - a.esperaOrdem})
         
         const ultimoRegistro = senhasOrdem.slice(0,1)
-
-
+        
         if (ultimoRegistro[0].esperaOrdem > this.state.esperaOrdem) {
-            this.togglePlay()                
+            this.togglePlay()     
+            this.ler(ultimoRegistro[0].sigla, ultimoRegistro[0].senha, ultimoRegistro[0].local)           
             this.setState({
                 play: true
-            }) 
+            })             
             this.setState({
                 esperaOrdem: ultimoRegistro[0].esperaOrdem,
                 play: false
@@ -81,8 +81,7 @@ export default class PainelExame extends Component {
   togglePlay = () => {
       this.setState({ play: !this.state.play }, () => {
         this.state.play ? this.audio.play() : this.audio.pause();
-      })
-      this.ler()
+      })      
   }
 
   render() {
@@ -98,21 +97,20 @@ export default class PainelExame extends Component {
     let ultima = esperaOrdem.slice(0,1)
     
   
-    let mostrarUltima = 
-    <div className="list-group">
-     { ultima && ultima.map((senha, index) => (
-          <div className="primeira" 
-              key={index} > 
-            <div> SENHA {senha.sigla}{senha.numero}  <span> - </span>
-             {senha.paciente}  </div>
-            <div style={{display: 'flex', justifyContent: 'center'}}> <h1> {senha.local}</h1></div>                              
-            {/* <div onLoadedData={this.ler(senha.sigla, senha.numero, senha.local)}></div> */ }
-          </div>
-        
-      ))}
-      
+    let mostrarUltima = <div className="list-group">
+     { ultima && ultima.map((senha, index) => (          
+          <div className="primeira" key={index}>              
+            <div> 
+              SENHA {senha.sigla}{senha.numero}  <span> - </span> {senha.paciente}
+            </div>
+            <div>
+               <h1> {senha.local}</h1>
+            </div>                                             
+            <div onLoad={this.ler(senha.sigla, senha.numero, senha.local)}> </div>
+          </div>                        
+      ))}      
       </div>
-  console.log(ultima)
+
     let mostrarSenha = 
       <div className="list-group">
      { ultimas && ultimas.map((senha, index) => (
@@ -120,7 +118,7 @@ export default class PainelExame extends Component {
               key={index} > 
              <div> SENHA {senha.sigla}{senha.numero}  <span> - </span>
              {senha.paciente}  </div>
-            <div style={{display: 'flex', justifyContent: 'center'}}> <h1> {senha.local}</h1></div>                              
+            <div> <h1> {senha.local}</h1></div>                              
                                                                      
           </div>
       ))}
