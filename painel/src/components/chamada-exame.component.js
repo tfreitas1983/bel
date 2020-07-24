@@ -9,6 +9,7 @@ export default class PainelExame extends Component {
     this.pegaSenhas = this.pegaSenhas.bind(this)
     this.esperaOrdem = this.esperaOrdem.bind(this)
     this.togglePlay = this.togglePlay.bind(this)
+    this.ler = this.ler.bind(this)
 
     this.state = {
       senhas:[],
@@ -33,6 +34,13 @@ export default class PainelExame extends Component {
 
   componentWillUnmount() {
     clearInterval(this.timerID);
+  }
+
+  ler(sigla, senha, local) {
+    this.speaker = new SpeechSynthesisUtterance();
+    this.speaker.lang = 'pt-BR';
+    this.speaker.text = 'Senha' + sigla + senha + local;
+    speechSynthesis.speak(this.speaker)
   }
 
   pegaSenhas() {        
@@ -74,6 +82,7 @@ export default class PainelExame extends Component {
       this.setState({ play: !this.state.play }, () => {
         this.state.play ? this.audio.play() : this.audio.pause();
       })
+      this.ler()
   }
 
   render() {
@@ -88,7 +97,7 @@ export default class PainelExame extends Component {
     let ultimas = esperaOrdem.slice(1,4)
     let ultima = esperaOrdem.slice(0,1)
     
-
+  
     let mostrarUltima = 
     <div className="list-group">
      { ultima && ultima.map((senha, index) => (
@@ -97,10 +106,13 @@ export default class PainelExame extends Component {
             <div> SENHA {senha.sigla}{senha.numero}  <span> - </span>
              {senha.paciente}  </div>
             <div style={{display: 'flex', justifyContent: 'center'}}> <h1> {senha.local}</h1></div>                              
+            {/* <div onLoadedData={this.ler(senha.sigla, senha.numero, senha.local)}></div> */ }
           </div>
+        
       ))}
+      
       </div>
-  
+  console.log(ultima)
     let mostrarSenha = 
       <div className="list-group">
      { ultimas && ultimas.map((senha, index) => (
