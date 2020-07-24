@@ -9,7 +9,7 @@ export default class PainelExame extends Component {
     this.pegaSenhas = this.pegaSenhas.bind(this)
     this.esperaOrdem = this.esperaOrdem.bind(this)
     this.togglePlay = this.togglePlay.bind(this)
-    this.ler = this.ler.bind(this)
+   // this.ler = this.ler.bind(this)
 
     this.state = {
       senhas:[],
@@ -37,10 +37,10 @@ export default class PainelExame extends Component {
   }
 
   ler(sigla, senha, local) {
-    this.speaker = new SpeechSynthesisUtterance()
-    this.speaker.lang = 'pt-BR'
-    this.speaker.text = 'Senha' + sigla + senha + local
-    speechSynthesis.speak(this.speaker)     
+    this.speaker = new SpeechSynthesisUtterance();
+    this.speaker.lang = 'pt-BR';
+    this.speaker.text = 'Senha' + sigla + senha + local;
+    speechSynthesis.speak(this.speaker);
   }
 
   pegaSenhas() {        

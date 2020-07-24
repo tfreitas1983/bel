@@ -453,7 +453,7 @@ export default class Espera extends Component {
 
         let modalChamada = null
         if(this.state.showModalChamada === true) {
-            if (currentSenha.status === "Encaminhada") {
+            if (currentSenha && currentSenha.status === "Encaminhada") {
             modalChamada = 
                 <div className="modal_bg" onKeyUp={this.handleKeyPress}>
                     <div className="modal" onKeyUp={this.handleKeyPress}>
@@ -481,7 +481,7 @@ export default class Espera extends Component {
                     </div>
                 </div>
             }
-            if (currentSenha.status === "Chamada Exame") {
+            if (currentSenha && currentSenha.status === "Chamada Exame") {
                 modalChamada = 
                     <div className="modal_bg" onKeyUp={this.handleKeyPress}>
                         <div className="modal" onKeyUp={this.handleKeyPress}>
@@ -512,7 +512,7 @@ export default class Espera extends Component {
                         </div>
                     </div>
                 }
-                if (currentSenha.status === "Rechamada Exame") {
+                if (currentSenha && currentSenha.status === "Rechamada Exame") {
                     modalChamada = 
                         <div className="modal_bg" onKeyUp={this.handleKeyPress}>
                             <div className="modal" onKeyUp={this.handleKeyPress}>
