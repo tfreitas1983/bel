@@ -42,7 +42,7 @@ export default class Senha extends Component {
         this.encaminharSenha = this.encaminharSenha.bind(this)
         this.cancelar = this.cancelar.bind(this)
 
-
+        this.botaoRef = React.createRef()
         this.state = {
             senhas:[],
             buscaSenha: "",
@@ -711,17 +711,7 @@ export default class Senha extends Component {
             selecionado.style.border = "0"            
         }
 
-       /*if (modal || modalReimprimir) {
-            let botao = document.getElementById('botao')
-            let botao2 = document.getElementById('botao2')
-            console.log("Imprimir",botao)
-            console.log("Reimprimir",botao2)
-            .addEventListener("click", function() {
-                document.getElementById('print').style.top = '0'
-            }) 
-        }*/
-
-        
+             
 
         /*******************************************************************
          * 
@@ -899,7 +889,7 @@ export default class Senha extends Component {
                     </div>
                     <div className="noprint">
                         <div className="actions" >                              
-                            <button id="botao" onClick={() => window.print()} style={{marginLeft: 180+'px'}} className="btn btn-success">
+                            <button id="botao" ref={this.botaoRef} onClick={() => window.print()} style={{marginLeft: 180+'px'}} className="btn btn-success">
                                 Imprimir
                             </button>                                                                             
                         </div>
@@ -907,13 +897,13 @@ export default class Senha extends Component {
                 </div>                
             </div>
 
-            let botao = document.getElementById("botao")
+           
             //let botao2 = document.getElementById('botao2')
-            console.log("Imprimir",botao)
+           // console.log("Imprimir",botao)
             //console.log("Reimprimir",botao2)
-            /*.addEventListener("click", function() {
+            /*this.botaoRef.addEventListener("click", function() {
                 document.getElementById('print').style.top = '0'
-            })*/ 
+            }) */
 
         }
 
