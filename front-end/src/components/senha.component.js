@@ -744,7 +744,8 @@ export default class Senha extends Component {
                 <div style={{backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
                     Chamar
                 </div>
-                <div style={{backgroundColor: '#FF0022', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.cancelar}>
+                <div style={{backgroundColor: '#FF0022', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} 
+                onClick={(e) => { if (window.confirm('Tem certeza em apagar essa senha?')) this.cancelar(e)}}>
                     Cancelar
                 </div>
             </div>
@@ -763,7 +764,8 @@ export default class Senha extends Component {
                 <div style={{backgroundColor: '#dd7322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalEncaminhar}>
                     Encaminhar
                 </div>
-                <div style={{backgroundColor: '#FF0022', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.cancelar}>
+                <div style={{backgroundColor: '#FF0022', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} 
+                onClick={(e) => { if (window.confirm('Tem certeza em apagar essa senha?')) this.cancelar(e)}}>
                     Cancelar
                 </div>
             </div>
@@ -782,7 +784,8 @@ export default class Senha extends Component {
                 <div style={{backgroundColor: '#dd7398', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalEncaminhar}>
                     Encaminhar
                 </div>
-                <div style={{backgroundColor: '#FF0022', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.cancelar}>
+                <div style={{backgroundColor: '#FF0022', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} 
+                onClick={(e) => { if (window.confirm('Tem certeza em apagar essa senha?')) this.cancelar(e)}}>
                     Cancelar
                 </div>
             </div>
