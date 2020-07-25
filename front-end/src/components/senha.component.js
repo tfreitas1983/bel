@@ -689,7 +689,7 @@ export default class Senha extends Component {
     render() {
         const { senhas, numero, local, buscaSenha, currentSenha, currentIndexSenha,
             salas, guiches, currentSala, currentIndexSala,
-            currentGuiche, currentIndexGuiche ,
+            currentGuiche, currentIndexGuiche , guiche,
             buscaNome, pacientes, info, page, current, currentIndex } = this.state
 
         //Reinderiza os números das páginas de acordo com o total delas
@@ -706,9 +706,12 @@ export default class Senha extends Component {
             )            
         } 
 
-        if (this.state.guiche) {
-            let vazio = document.getElementById('guiche2').style.border = "0"            
+        if (guiche) {
+            let selecionado = document.getElementById('guiche2')
+            selecionado.style.border = "0"            
         }
+
+        
 
         /*******************************************************************
          * 
