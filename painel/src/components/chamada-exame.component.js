@@ -40,8 +40,8 @@ export default class PainelExame extends Component {
   ler() {
     this.speaker = new SpeechSynthesisUtterance();
     this.speaker.lang = 'pt-BR';
-    this.speaker.rate = 0.68;
-    this.speaker.text = 'Senha' + this.state.sigla + this.state.numero + this.state.paciente + this.state.local;
+    this.speaker.rate = 0.73;
+    this.speaker.text = 'Senha' + '!.!.' + this.state.sigla + '!'+ this.state.numero + '!.!.!.!'+ this.state.paciente + '!!!' +  this.state.local;
     speechSynthesis.cancel();
     speechSynthesis.speak(this.speaker);
   }
