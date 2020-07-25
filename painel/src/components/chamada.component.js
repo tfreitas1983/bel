@@ -8,16 +8,17 @@ export default class PainelSenha extends Component {
     super(props)
     this.pegaSenhas = this.pegaSenhas.bind(this)
     this.ordem = this.ordem.bind(this)
-    this.togglePlay = this.togglePlay.bind(this)
+    this.ler = this.ler.bind(this)
 
     this.state = {
       senhas:[],
       currentSenha: null,
       currentIndexSenha: -1,
+      sigla: "",
       numero: "",
       local: "",
-      paciente: "",
-      play: false,
+      guiche: "",
+      paciente: "",      
       ordem: 0
     } 
   }
@@ -47,6 +48,15 @@ export default class PainelSenha extends Component {
     })
   }
 
+  ler() {
+    this.speaker = new SpeechSynthesisUtterance();
+    this.speaker.lang = 'pt-BR';
+    this.speaker.rate = 0.68;
+    this.speaker.text = 'Senha!.!.!' + '!.!.!' + this.state.sigla + '!.!.!' + this.state.numero + '!.!.!.!.!.!.!.!.!.!.!.!'+ this.state.paciente + '!!!' +  this.state.guiche;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(this.speaker);
+  }
+
   ordem() {
 
     if (this.state.senhas.length > 0) {
@@ -56,19 +66,24 @@ export default class PainelSenha extends Component {
     
 
       if (ultimoRegistro[0].ordem > this.state.ordem) {
-        this.togglePlay()                
-          this.setState({
-              play: true
-          }) 
+        
+        this.setState({              
+            sigla: ultimoRegistro[0].sigla,
+            numero: ultimoRegistro[0].numero,
+            paciente: ultimoRegistro[0].paciente,
+            guiche: ultimoRegistro[0].guiche
+        }) 
+    
+        this.ler()
+        this.setState({
+          ordem: ultimoRegistro[0].ordem     
+        })
       }
-
-      this.setState({
-        ordem: ultimoRegistro[0].ordem,
-        play:false
-      })
-
     }
   }
+
+
+
 
   audio = new Audio(notify)
 

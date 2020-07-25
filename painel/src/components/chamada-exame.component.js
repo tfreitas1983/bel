@@ -40,8 +40,8 @@ export default class PainelExame extends Component {
   ler() {
     this.speaker = new SpeechSynthesisUtterance();
     this.speaker.lang = 'pt-BR';
-    this.speaker.rate = 0.73;
-    this.speaker.text = 'Senha' + '!.!.' + this.state.sigla + '!'+ this.state.numero + '!.!.!.!'+ this.state.paciente + '!!!' +  this.state.local;
+    this.speaker.rate = 0.65;
+    this.speaker.text = 'Senha!.!.!' + '!.!.!' + this.state.sigla + '!.!.!' + this.state.numero + '!.!.!'+ this.state.paciente + '!!!' +  this.state.local;
     speechSynthesis.cancel();
     speechSynthesis.speak(this.speaker);
   }
@@ -61,25 +61,25 @@ export default class PainelExame extends Component {
   esperaOrdem() {
 
     if (this.state.senhas.length > 0) {
-        const senhasOrdem = this.state.senhas.sort(function(a, b){return  b.esperaOrdem - a.esperaOrdem})
-        
-        const ultimoRegistro = senhasOrdem.slice(0,1)
-        
-        if (ultimoRegistro[0].esperaOrdem > this.state.esperaOrdem) {
-          //this.togglePlay()           
-          this.setState({              
-              sigla: ultimoRegistro[0].sigla,
-              numero: ultimoRegistro[0].numero,
-              paciente: ultimoRegistro[0].paciente,
-              local: ultimoRegistro[0].local,
-              play: true
-          }) 
-          this.ler()            
-          this.setState({
-              esperaOrdem: ultimoRegistro[0].esperaOrdem,
-              play: false
-          })
-        }
+      const senhasOrdem = this.state.senhas.sort(function(a, b){return  b.esperaOrdem - a.esperaOrdem})
+      
+      const ultimoRegistro = senhasOrdem.slice(0,1)
+      
+      if (ultimoRegistro[0].esperaOrdem > this.state.esperaOrdem) {
+                    
+        this.setState({              
+            sigla: ultimoRegistro[0].sigla,
+            numero: ultimoRegistro[0].numero,
+            paciente: ultimoRegistro[0].paciente,
+            local: ultimoRegistro[0].local,
+            //play: true
+        }) 
+        this.ler()            
+        this.setState({
+            esperaOrdem: ultimoRegistro[0].esperaOrdem,
+            //play: false
+        })
+      }
     }
   }
 

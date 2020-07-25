@@ -41,6 +41,7 @@ export default class Senha extends Component {
         this.ultimaChamada = this.ultimaChamada.bind(this)
         this.encaminharSenha = this.encaminharSenha.bind(this)
 
+
         this.state = {
             senhas:[],
             buscaSenha: "",
@@ -650,6 +651,7 @@ export default class Senha extends Component {
                 console.log(e)
             })
     }
+
 
 
     render() {
