@@ -711,6 +711,16 @@ export default class Senha extends Component {
             selecionado.style.border = "0"            
         }
 
+       /*if (modal || modalReimprimir) {
+            let botao = document.getElementById('botao')
+            let botao2 = document.getElementById('botao2')
+            console.log("Imprimir",botao)
+            console.log("Reimprimir",botao2)
+            .addEventListener("click", function() {
+                document.getElementById('print').style.top = '0'
+            }) 
+        }*/
+
         
 
         /*******************************************************************
@@ -888,14 +898,23 @@ export default class Senha extends Component {
                         <label style={{fontWeight: 'bold', fontSize:36+'px'}}>{" "}{this.state.currentSala.sigla}{numero}</label>
                     </div>
                     <div className="noprint">
-                        <div className="actions">                                  
-                            <button onClick={() => window.print()} style={{marginLeft: 180+'px'}} className="btn btn-success">
+                        <div className="actions" >                              
+                            <button id="botao" onClick={() => window.print()} style={{marginLeft: 180+'px'}} className="btn btn-success">
                                 Imprimir
-                            </button>                                                   
+                            </button>                                                                             
                         </div>
                     </div>
                 </div>                
             </div>
+
+            let botao = document.getElementById("botao")
+            //let botao2 = document.getElementById('botao2')
+            console.log("Imprimir",botao)
+            //console.log("Reimprimir",botao2)
+            /*.addEventListener("click", function() {
+                document.getElementById('print').style.top = '0'
+            })*/ 
+
         }
 
         /*******************************************************************
@@ -913,7 +932,7 @@ export default class Senha extends Component {
                             
                         </div>
                     </div>                   
-                    <div className="impressao">
+                    <div className="impressao" id="print2">
                         <div className="noprint">
                             <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalSenha}>X</button>
                         </div>
@@ -931,7 +950,7 @@ export default class Senha extends Component {
                             Senha: {currentSenha.sigla}{currentSenha.numero}
                         </label>  
                         <div className="noprint">   
-                            <div  style={{marginLeft: 180+'px'}} >
+                            <div id="botao2" style={{marginLeft: 180+'px'}} >
                                 <button onClick={() => window.print()} className="btn btn-success">
                                     Imprimir
                                 </button>
