@@ -348,8 +348,11 @@ export default class Senha extends Component {
 
         if (!this.state.guiche) {
             alert("Selecione um guichê")
+            let vazio = document.getElementById('guiche2').style.border = "thick solid red"
             return
         }
+
+
 
 
         if (this.state.current && this.state.currentSala) {
@@ -703,6 +706,10 @@ export default class Senha extends Component {
             )            
         } 
 
+        if (this.state.guiche) {
+            let vazio = document.getElementById('guiche2').style.border = "0"            
+        }
+
         /*******************************************************************
          * 
          *                      SENHAS GERADAS
@@ -859,8 +866,8 @@ export default class Senha extends Component {
                     <div className="modal_bg">
                         
                     </div>
-                </div>
-                <div className="impressao" onKeyPress={this.handleKeyPress} >                        
+                </div>                
+                <div className="impressao">                        
                     <div className="noprint">
                         <button type="button" className="closeButton" id="closeButton" onClick={this.hideModal}>X</button>
                     </div>
@@ -878,17 +885,13 @@ export default class Senha extends Component {
                         <label style={{fontWeight: 'bold', fontSize:36+'px'}}>{" "}{this.state.currentSala.sigla}{numero}</label>
                     </div>
                     <div className="noprint">
-                    <div className="actions">                                  
-                        <button onClick={() => window.print()} style={{marginLeft: 180+'px'}} className="btn btn-success">
-                            Imprimir
-                        </button>
-                        <button type="button" onClick={this.hideModal}>
-                            Fechar
-                        </button>
-                        
+                        <div className="actions">                                  
+                            <button onClick={() => window.print()} style={{marginLeft: 180+'px'}} className="btn btn-success">
+                                Imprimir
+                            </button>                                                   
+                        </div>
                     </div>
-                    </div>
-                </div> 
+                </div>                
             </div>
         }
 
@@ -993,7 +996,7 @@ export default class Senha extends Component {
                             </label>  
                             <div className="noprint">                                  
                             <div>                            
-                                <button onClick={this.rechamarSenha}>Chamar 2a vez</button>
+                                <button onClick={this.rechamarSenha} style={{width: 150+'px'}}>Chamar 2a vez</button>
                             </div>
                             </div>
                         </div>
@@ -1173,7 +1176,7 @@ export default class Senha extends Component {
                     <div className="actions">
                         <h1>Senhas</h1> 
                        
-                        <div className="actions">                           
+                        <div id="guiche2" className="actions">                           
                             <label style={{marginRight:10+'px'}}>Guichê</label>                                                
                             <select 
                                 className="form-control" 
