@@ -857,12 +857,17 @@ export default class Senha extends Component {
         let modalReimprimir = null
         if(this.state.showModalSenha === true) {
             modalReimprimir = 
-                <div className="modal_bg" onKeyUp={this.handleKeyPress}>
-                    <div className="impressao" onKeyUp={this.handleKeyPress}>
+                <div>
+                    <div className="noprint">
+                        <div className="modal_bg">
+                            
+                        </div>
+                    </div>
+                    <div className="impressao">
                         <div className="noprint">
                             <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalSenha}>X</button>
                         </div>
-                    <h2 style={{marginLeft: 15+'px'}}> Clínica Imagem</h2>
+                        <h2 style={{marginLeft: 25+'px'}}> Clínica Imagem</h2>
                         
                         <label style={{fontWeight: 'bold', fontSize:24+'px', marginLeft: 25+'px'}}>
                             {currentSenha.paciente}
@@ -872,13 +877,15 @@ export default class Senha extends Component {
                             {currentSenha.local}
                         </label>
                         
-                        <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 40+'px'}}>
+                        <label style={{fontWeight: 'bold', fontSize:40+'px', marginLeft: 30+'px'}}>
                             Senha: {currentSenha.sigla}{currentSenha.numero}
                         </label>  
-                        <div className="noprint">                                  
-                            <button onClick={() => window.print()} className="btn btn-success">
-                                Imprimir
-                            </button>
+                        <div className="noprint">   
+                            <div  style={{marginLeft: 180+'px'}} >
+                                <button onClick={() => window.print()} className="btn btn-success">
+                                    Imprimir
+                                </button>
+                            </div>                               
                         </div>
                     </div>
                 </div>
