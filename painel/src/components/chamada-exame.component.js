@@ -9,12 +9,13 @@ export default class PainelExame extends Component {
     this.pegaSenhas = this.pegaSenhas.bind(this)
     this.esperaOrdem = this.esperaOrdem.bind(this)
     this.togglePlay = this.togglePlay.bind(this)
-   // this.ler = this.ler.bind(this)
+    this.ler = this.ler.bind(this)
 
     this.state = {
       senhas:[],
       currentSenha: null,
       currentIndexSenha: -1,
+      sigla: "",
       numero: "",
       local: "",
       paciente: "",
@@ -36,10 +37,12 @@ export default class PainelExame extends Component {
     clearInterval(this.timerID);
   }
 
-  ler(sigla, senha, local) {
+  ler() {
     this.speaker = new SpeechSynthesisUtterance();
     this.speaker.lang = 'pt-BR';
-    this.speaker.text = 'Senha' + sigla + senha + local;
+    this.speaker.rate = 0.68;
+    this.speaker.text = 'Senha' + this.state.sigla + this.state.numero + this.state.paciente + this.state.local;
+    speechSynthesis.cancel();
     speechSynthesis.speak(this.speaker);
   }
 
@@ -63,15 +66,19 @@ export default class PainelExame extends Component {
         const ultimoRegistro = senhasOrdem.slice(0,1)
         
         if (ultimoRegistro[0].esperaOrdem > this.state.esperaOrdem) {
-            this.togglePlay()     
-            this.ler(ultimoRegistro[0].sigla, ultimoRegistro[0].senha, ultimoRegistro[0].local)           
-            this.setState({
-                play: true
-            })             
-            this.setState({
-                esperaOrdem: ultimoRegistro[0].esperaOrdem,
-                play: false
-            })
+          //this.togglePlay()           
+          this.setState({              
+              sigla: ultimoRegistro[0].sigla,
+              numero: ultimoRegistro[0].numero,
+              paciente: ultimoRegistro[0].paciente,
+              local: ultimoRegistro[0].local,
+              play: true
+          }) 
+          this.ler()            
+          this.setState({
+              esperaOrdem: ultimoRegistro[0].esperaOrdem,
+              play: false
+          })
         }
     }
   }
@@ -104,9 +111,8 @@ export default class PainelExame extends Component {
               SENHA {senha.sigla}{senha.numero}  <span> - </span> {senha.paciente}
             </div>
             <div>
-               <h1> {senha.local}</h1>
-            </div>                                             
-            <div onLoad={this.ler(senha.sigla, senha.numero, senha.local)}> </div>
+               <h1> {senha.local} </h1>
+            </div>                                                         
           </div>                        
       ))}      
       </div>

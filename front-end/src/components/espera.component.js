@@ -318,7 +318,16 @@ export default class Espera extends Component {
 
         let mostrarSenha = null
 
-        if (currentSenha && currentSenha !== null) {            
+        if (currentSenha && currentSenha !== null) {
+            if(currentSenha.status === "Encaminhada" ||currentSenha.status === "Chamada Exame" || currentSenha.status === "Rechamada Exame") {
+                mostrarSenha =  <div className="autocomplete-items-active" >                
+                SENHA  {currentSenha.sigla}{currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}               
+                <div style={{backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
+                    Chamar
+                </div>
+            </div>
+        }}
+       /* if (currentSenha && currentSenha !== null) {            
             mostrarSenha = senhas && senhas.map(function(senha, index) {
                if (senha.status === "Encaminhada" || senha.status === "Chamada Exame" || senha.status === "Rechamada Exame") 
                 return <div className="list-group">
@@ -332,7 +341,7 @@ export default class Espera extends Component {
                     </div>
                 </div>
             }.bind(this))
-        }
+        }*/
 
 
         if (currentSenha === null && buscaSenha === '') {            

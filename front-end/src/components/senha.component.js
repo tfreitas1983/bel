@@ -7,9 +7,6 @@ import GuicheDataService from '../services/guiche.service'
 import { Link } from "react-router-dom"
 import * as moment from 'moment'
 
-
-
-
 export default class Senha extends Component {
     constructor(props) {
         super(props)
