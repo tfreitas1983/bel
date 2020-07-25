@@ -867,7 +867,7 @@ export default class Senha extends Component {
                         
                     </div>
                 </div>                
-                <div className="impressao">                        
+                <div className="impressao" id="print">                        
                     <div className="noprint">
                         <button type="button" className="closeButton" id="closeButton" onClick={this.hideModal}>X</button>
                     </div>
