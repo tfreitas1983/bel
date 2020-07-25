@@ -40,6 +40,7 @@ export default class Senha extends Component {
         this.rechamarSenha = this.rechamarSenha.bind(this)
         this.ultimaChamada = this.ultimaChamada.bind(this)
         this.encaminharSenha = this.encaminharSenha.bind(this)
+        this.cancelar = this.cancelar.bind(this)
 
 
         this.state = {
@@ -345,6 +346,10 @@ export default class Senha extends Component {
             return
         }
 
+        if (!this.state.guiche) {
+            alert("Selecione um guichê")
+            return
+        }
 
 
         if (this.state.current && this.state.currentSala) {
@@ -643,13 +648,37 @@ export default class Senha extends Component {
 
     apagar() {
         SenhaDataService.apagarTodos()
-            .then(response => {
-                console.log(response.data)
-                this.pegaSenhas()
-            })
-            .catch(e => {
-                console.log(e)
-            })
+        .then(response => {
+            console.log(response.data)
+            this.pegaSenhas()
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
+    
+    cancelar() {
+        SenhaDataService.apagar(this.state.currentSenha.id)
+        .then(response => {
+            this.props.history.push('/senhas')
+        })        
+        .catch(e => {
+            console.log(e)
+        })
+        this.pegaSenhas()
+        this.setState({
+            buscaSenha: "",
+            currentSenha: null,
+            currentIndexSenha: -1,
+            current: null,
+            id: "",
+            senhas: [],
+            situacao: false,
+            situacao: false,
+            sala: "",
+            sigla: ""
+        })  
+        this.pegaSenhas()
     }
 
 
@@ -688,7 +717,7 @@ export default class Senha extends Component {
             
              senhas && senhas.map(function(senha, index) {
                if (senha.status === "Gerada" || senha.status === "Chamada" || senha.status === "Rechamada" ) 
-                return <div className="list-group">
+                return <div className="list-group" key={index}>
                             <div className={"autocomplete-items" + (index === currentIndexSenha ? "-active" : "")} 
                                 onClick={() => this.ativaSenha(senha, index)} 
                                 key={index} 
@@ -708,12 +737,15 @@ export default class Senha extends Component {
         if (currentSenha !== null && currentSenha.status === "Gerada") {
             mostrarSenha =  <div className="autocomplete-items-active" >
                 
-        SENHA  {currentSenha.sigla}{currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
+                SENHA  {currentSenha.sigla}{currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
                 <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
                     Reimprimir
                 </div>
                 <div style={{backgroundColor: '#997322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalChamada}>
                     Chamar
+                </div>
+                <div style={{backgroundColor: '#FF0022', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.cancelar}>
+                    Cancelar
                 </div>
             </div>
         }
@@ -731,6 +763,9 @@ export default class Senha extends Component {
                 <div style={{backgroundColor: '#dd7322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalEncaminhar}>
                     Encaminhar
                 </div>
+                <div style={{backgroundColor: '#FF0022', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.cancelar}>
+                    Cancelar
+                </div>
             </div>
         }
 
@@ -746,6 +781,9 @@ export default class Senha extends Component {
                 </div>
                 <div style={{backgroundColor: '#dd7398', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalEncaminhar}>
                     Encaminhar
+                </div>
+                <div style={{backgroundColor: '#FF0022', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.cancelar}>
+                    Cancelar
                 </div>
             </div>
         }
@@ -813,9 +851,12 @@ export default class Senha extends Component {
 
         let modal = null
         if(this.state.showModal === true) {
-            modal = 
-                
-            <div className="modal_bg">
+            modal = <div>
+                <div className="noprint">
+                    <div className="modal_bg">
+                        
+                    </div>
+                </div>
                 <div className="impressao" onKeyPress={this.handleKeyPress} >                        
                     <div className="noprint">
                         <button type="button" className="closeButton" id="closeButton" onClick={this.hideModal}>X</button>
@@ -862,7 +903,7 @@ export default class Senha extends Component {
                         <div className="modal_bg">
                             
                         </div>
-                    </div>
+                    </div>                   
                     <div className="impressao">
                         <div className="noprint">
                             <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalSenha}>X</button>

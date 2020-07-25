@@ -17,6 +17,10 @@ class SenhaDataService {
         return http.put(`/senhas/${id}`, data)
     }
 
+    apagar(id) {
+        return http.delete(`/senhas/${id}`)
+    }
+
     buscarSenha(paciente, page) {
         return http.get(`/senhas?paciente=${paciente}&page=${page}`)
     } 
