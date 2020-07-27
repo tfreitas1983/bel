@@ -416,19 +416,18 @@ table, th, td {
   margin-right: 15px;  
   font-size: 18px;
 }
+
 @media print { 
   .noprint  { 
     display: none;
   }
 
-
-  body.modal-open .modal .modal_bg .modal-body .impressao {
-    visibility: visible; /* make visible modal body and header */
-    position: absolute;
-    top: 0;
-    margin:0;
+  body .modal-open .modal .modal_bg .modal-body .impressao {
+  visibility: visible; /* make visible modal body and header */
+  position: absolute;
+  top: 0;
+  margin:0;
   }
-
 }
 
 
@@ -456,27 +455,31 @@ table, th, td {
 }
 
 .impressao {
+  position: relative;
+  display: grid;
+  width:500px;
+  height: 200px;
+  background-color:#FFFFFF;
+  top: 10px;
+  left: 10px;
+  margin: 0;
+  padding: 0;
+  z-index: 111;
+}
+
+.impressao1 {
   position: absolute;
   display: grid;
   width:500px;
   height: 300px;
   background-color:#FFFFFF;
-  z-index:100;
-  top:10px;
+  top: 60px;
   left: 10px;
   margin: 0;
+  padding: 0;
   z-index: 111;
 }
 
-.impressao h2 {
-  margin-left: 45px;
-}
-
-
-.modal h2{
-  justify-content: center;
-  display: flex;
-}
 
 .modal button{
   padding: 0px;

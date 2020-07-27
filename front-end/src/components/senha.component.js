@@ -41,8 +41,13 @@ export default class Senha extends Component {
         this.ultimaChamada = this.ultimaChamada.bind(this)
         this.encaminharSenha = this.encaminharSenha.bind(this)
         this.cancelar = this.cancelar.bind(this)
+        this.handleClick = this.handleClick.bind(this)
+        this.imprimir = this.imprimir.bind(this)
+        
 
-        this.botaoRef = React.createRef()
+    
+        this.divRef =  React.createRef()
+
         this.state = {
             senhas:[],
             buscaSenha: "",
@@ -69,7 +74,9 @@ export default class Senha extends Component {
             currentIndex: -1,
             selectedPage: null,
             buscaNome: "",
-            showModalGuiche: null
+            showModalGuiche: null,
+            isToggleOn: false,
+            className: 'impressao'
         }
     }
 
@@ -352,16 +359,10 @@ export default class Senha extends Component {
             return
         }
 
-
-
-
-        if (this.state.current && this.state.currentSala) {
-            
-            
+        if (this.state.current && this.state.currentSala) {            
             filtro = (this.state.senhas).filter((item) => {
                 return item.local === this.state.currentSala.sala
-            })
-                         
+            })         
 
             if (filtro.length > 0) {
                 maior = filtro.reduce((a,b) => {
@@ -369,6 +370,8 @@ export default class Senha extends Component {
                     return a
                 })           
                 this.setState({
+                    currentSenha: null,
+                    currentIndexSenha: -1,
                     numero: (maior.numero)+soma,
                     tipo: "exame",
                     paciente: this.state.current.nome,
@@ -378,6 +381,8 @@ export default class Senha extends Component {
             
             if (filtro.length === 0) {
                 this.setState({
+                    currentSenha: null,
+                    currentIndexSenha: -1,
                     numero: soma,
                     tipo: "exame",
                     paciente: this.state.current.nome,
@@ -470,7 +475,8 @@ export default class Senha extends Component {
         buscaNome: "",
         buscaSenha: "",
         current: null,
-        currentIndexSenha: -1        
+        currentIndexSenha: -1,
+        isToggleOn: false     
     }) 
     this.limpaCurrentSenha()
     this.pegaPacientes()      
@@ -486,7 +492,8 @@ export default class Senha extends Component {
             numero: "",
             tipo: "",
             buscaNome: "",            
-            currentIndex: -1
+            currentIndex: -1,
+            isToggleOn: false
         }) 
         this.limpaCurrentSenha()
         this.pegaPacientes()      
@@ -684,6 +691,20 @@ export default class Senha extends Component {
         this.pegaSenhas()
     }
 
+    imprimir() {
+        window.print()
+    }
+    
+    handleClick() {
+        this.setState({
+          isToggleOn: true,
+          className: 'impressao'
+        })     
+        this.imprimir()   
+    }
+
+    
+
 
 
     render() {
@@ -733,7 +754,7 @@ export default class Senha extends Component {
                                 key={index} 
                                 style={{display: 'flex', justifyContent: 'space-between'}}> 
                                     SENHA {senha.sigla}{senha.numero} - {senha.paciente} - {senha.local}  - {senha.status}
-                                    <div style={{backgroundColor: '#aaaf22', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={() =>this.showModalSenha}>
+                                    <div style={{display: 'flex', alignSelf: 'center',backgroundColor: '#aaaf22', color: '#fefefe', cursor: 'pointer', marginRight: 2+'px', padding: 0,borderRadius: 5+'px'}} onClick={() =>this.showModalSenha}>
                                         Reimprimir
                                     </div>    
                             </div> 
@@ -762,7 +783,7 @@ export default class Senha extends Component {
         }
 
         if (currentSenha !== null && currentSenha.status === "Chamada") {
-            mostrarSenha =  <div className="autocomplete-items-active" >
+            mostrarSenha =  <div className="autocomplete-items-active" style={{margin:0,padding:0}}>
                 
                 SENHA  {currentSenha.sigla}{currentSenha.numero} {currentSenha.paciente} {currentSenha.local} {currentSenha.status}
                 <div style={{backgroundColor: '#437322', color: '#fefefe', cursor: 'pointer', margin:0, padding: 0,borderRadius: 5+'px'}} onClick={this.showModalSenha}>
@@ -812,8 +833,9 @@ export default class Senha extends Component {
             mostrar =  <div className="autocomplete-items-active">
                 {current.nome}
                 {<Link to={`/pacientes/${current.id}`} id="editar" className="autocomplete-items">Editar</Link>}
-            </div>
+            </div>            
         } 
+
         if (current === null || buscaNome === '') {            
             mostrar = 
             <div className="list-group" style={{width:92+'%'}}>
@@ -836,7 +858,7 @@ export default class Senha extends Component {
         let autocomplete = null
         if (pacientes) {
             autocomplete = 
-            <div style={{width: 100+'%'}}>
+            <div style={{width: 100+'%', marginTop: -7+'px'}}>
                 <div className="actions">
                     <div className="autocomplete">
                         <input 
@@ -862,50 +884,42 @@ export default class Senha extends Component {
          * 
          ******************************************************************/
 
+       
         let modal = null
         if(this.state.showModal === true) {
-            modal = <div>
-                <div className="noprint">
-                    <div className="modal_bg">
-                        
-                    </div>
-                </div>                
-                <div className="impressao" id="print">                        
+            modal = <div className="modal_bg"> 
+                <div className="impressao1">
                     <div className="noprint">
                         <button type="button" className="closeButton" id="closeButton" onClick={this.hideModal}>X</button>
                     </div>
-                    <h2 style={{marginLeft: 40+'px'}}> Clínica Imagem</h2>
-                    
+                    <h2 style={{marginLeft: 40+'px'}}> Clínica Imagem</h2>                    
                     <label style={{fontWeight: 'bold', fontSize:24+'px'}}>
                         {current.nome}
                     </label>
-                
-                    <label style={{fontWeight: 'bold', fontSize:24+'px'}}>
-                        {local}
-                    </label>
+                    <div>
+                        <label style={{fontWeight: 'bold', fontSize:24+'px'}}>
+                            {local}
+                        </label>
+                    </div>
                     <div style={{display: 'flex', margin:0, padding: 0}}>
                         <label style={{fontWeight: 'bold', fontSize:36+'px'}}> Senha: </label> 
                         <label style={{fontWeight: 'bold', fontSize:36+'px'}}>{" "}{this.state.currentSala.sigla}{numero}</label>
                     </div>
+                    
                     <div className="noprint">
                         <div className="actions" >                              
-                            <button id="botao" ref={this.botaoRef} onClick={() => window.print()} style={{marginLeft: 180+'px'}} className="btn btn-success">
+                            <button id="botao" onClick={() => window.print()} style={{marginLeft: 180+'px'}} className="btn btn-success">
                                 Imprimir
                             </button>                                                                             
                         </div>
-                    </div>
-                </div>                
+                    </div> 
+                </div>                               
             </div>
-
-           
-            //let botao2 = document.getElementById('botao2')
-           // console.log("Imprimir",botao)
-            //console.log("Reimprimir",botao2)
-            /*this.botaoRef.addEventListener("click", function() {
-                document.getElementById('print').style.top = '0'
-            }) */
-
         }
+
+       
+        
+       
 
         /*******************************************************************
          * 
@@ -916,13 +930,8 @@ export default class Senha extends Component {
         let modalReimprimir = null
         if(this.state.showModalSenha === true) {
             modalReimprimir = 
-                <div>
-                    <div className="noprint">
-                        <div className="modal_bg">
-                            
-                        </div>
-                    </div>                   
-                    <div className="impressao" id="print2">
+                <div>                                   
+                    <div className={this.state.className} id="print2" ref={this.divRef}>
                         <div className="noprint">
                             <button type="button" className="closeButton" id="closeButton" onClick={this.hideModalSenha}>X</button>
                         </div>
@@ -941,14 +950,16 @@ export default class Senha extends Component {
                         </label>  
                         <div className="noprint">   
                             <div id="botao2" style={{marginLeft: 180+'px'}} >
-                                <button onClick={() => window.print()} className="btn btn-success">
+                                <button onClick={this.handleClick} className="btn btn-success">
                                     Imprimir
                                 </button>
                             </div>                               
                         </div>
                     </div>
                 </div>
+                
         }
+        
 
         /*******************************************************************
          * 
@@ -1118,14 +1129,14 @@ export default class Senha extends Component {
                 
         /*******************************************************************
          * 
-         * Caixa de texto para a busca de senhas
+         *              Caixa de texto para a busca de senhas
          * 
          *******************************************************************/
 
         let autocompleteSenha = null
         if (senhas) {
             autocompleteSenha = 
-            <div>
+            <div style={{marginTop: -30+'px'}}>
                 <div className="actions">
                     <div className="autocomplete">
                         <input 
@@ -1211,6 +1222,9 @@ export default class Senha extends Component {
                             <Link to={"/pacientes/adicionar"}>Novo Paciente</Link>                            
                         </div>                    
                         {autocomplete}
+                        
+                        
+                        
                         <div className="actions">
                             <button disabled={page === 1} onClick={this.prevPage}>
                                 Anterior
@@ -1222,11 +1236,12 @@ export default class Senha extends Component {
                                 Próxima
                             </button>
                         </div>
+                        
                         <button type="button" className="btn btn-danger" onClick={this.apagar}>Apagar Anteriores</button>
                     </div>
-                    <div className="col-md-5">
-                        <label>Sala</label>
-                        <div className="actions">                                
+                    <div className="col-md-5" style={{margin: 0}}>
+                        <label style={{margin: 0}}>Sala</label>
+                        <div className="actions" style={{margin: 0, padding:0}}>                                
                             <select 
                                 className="form-control" 
                                 id="sala" 
@@ -1239,7 +1254,7 @@ export default class Senha extends Component {
                                 ))}                             
                             </select>
                             <div>
-                            <button type="button" style={{width:10+'em', height: 3+'em',marginLeft: 10+'px', padding: 15+'px'}} onClick={this.gerarSenha}>
+                            <button type="button" style={{width:10+'em', height: 2.6+'em',marginLeft: 10+'px', padding: 5+'px'}} onClick={this.gerarSenha}>
                                 Gerar Senha
                             </button>
                             </div>
