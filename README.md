@@ -1,10 +1,10 @@
 # bel
 
-School enrollment
+Ticket and queue Panel
 
-- Shcools manager
-- Class manager
-- Search school from zip code distance
+- Rooms manager
+- User manager
+- Call by name or number on TV
 
 
 NodeJs
@@ -12,5 +12,3 @@ Express
 JWT
 MongoDB
 ReactJs
-Sendgri API
-Google geolocation
